@@ -37,7 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'receipt_generator',
 ]
+
+# This will automatically detect the absolute path to the settings.py file and
+# then append media/ to it given you a dynamically generated path to your media
+# root.
+ENV_PATH = os.path.abspath(os.path.dirname(__file__))
+MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +61,7 @@ ROOT_URLCONF = 'projectname.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["projectname/templates/"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
