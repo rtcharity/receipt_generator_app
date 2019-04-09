@@ -20,12 +20,22 @@ class Donation(models.Model):
         )
 
 # The charity which receives the gift first (i.e. not the destination charity.)
-# In the first iteration of this web app, the charity will
+# In the first release of this web app, the charity will
 # always be RC Forward.
 class Charity(models.Model):
     name = models.CharField(max_length=50)
     address = models.TextField
     logo = models.FileField(upload_to='logos')
     signature = models.FileField(upload_to='signatures')
+    registration = models.CharField(
+        "IRS/CRA registration number",
+        max_length=100
+        )
+
+# This class exists in order to maintain unique receipt ids for each time
+# the user generates a receipt, and to associate receipts with donors/donations.
+class Receipts(models.Model):
+    donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
+    receipt = models.FileField(upload_to='receipts')
     
     
