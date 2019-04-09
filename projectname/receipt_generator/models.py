@@ -31,10 +31,13 @@ class Charity(models.Model):
         "IRS/CRA registration number",
         max_length=100
         )
+        
+    class Meta:
+        verbose_name_plural = 'Charities'
 
 # This class exists in order to maintain unique receipt ids for each time
 # the user generates a receipt, and to associate receipts with donors/donations.
-class Receipts(models.Model):
+class Receipt(models.Model):
     donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
     receipt = models.FileField(upload_to='receipts')
     
