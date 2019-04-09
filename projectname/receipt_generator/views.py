@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render
-from .models import Donor, Donation
+from .models import Donor, Donation, Receipt
 
 def receipt_generator_index(request):
     context = {
@@ -35,3 +35,13 @@ def edit_donation(request, pk):
         'donation': donation
     }
     return render(request, 'edit_donation.html', context)
+    
+def view_receipt(request, pk):
+    try:
+        receipt = Receipt.objects.get(pk=pk)
+    except Receipt.DoesNotExist:
+        raise Http404("Receipt does not exist")
+    context = {
+        'receipt': receipt
+    }
+    return render(request, 'view_receipt.html', context)

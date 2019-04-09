@@ -10,6 +10,9 @@ class Donor(models.Model):
         default=''
         )
         
+    def __str__(self):
+        return '%s %s' % (self.first_name, self.last_name)
+        
 class Donation(models.Model):
     donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
     date_received = models.DateField("The date the gift was received")
@@ -39,6 +42,9 @@ class Charity(models.Model):
         "Email address to receive copies of tax receipts.",
         default=''
         )
+        
+    def __str__(self):
+        return self.name
         
     class Meta:
         verbose_name_plural = 'Charities'
