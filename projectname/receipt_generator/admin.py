@@ -6,6 +6,3 @@ admin.site.register(Donation)
 admin.site.register(Donor)
 admin.site.register(Charity)
 admin.site.register(Receipt)
-
-
-# Register your models here.

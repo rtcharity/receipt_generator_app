@@ -5,7 +5,11 @@ class Donor(models.Model):
     middle_initials = models.CharField(max_length=10)
     last_name = models.CharField(max_length=50)
     address = models.TextField
-
+    email = models.EmailField(
+        "Email address to receive tax receipts.",
+        default=''
+        )
+        
 class Donation(models.Model):
     donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
     date_received = models.DateField("The date the gift was received")
@@ -30,6 +34,10 @@ class Charity(models.Model):
     registration = models.CharField(
         "IRS/CRA registration number",
         max_length=100
+        )
+    email = models.EmailField(
+        "Email address to receive copies of tax receipts.",
+        default=''
         )
         
     class Meta:
