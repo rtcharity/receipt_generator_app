@@ -5,8 +5,7 @@ python3.6 manage.py createsuperuser
 ```
 
 Define the required details for the admin account. Warning: anyone who can edit
-the source code of the website can create an admin account in this way. Hence
-admin accounts do not have direct access to donor details. 
+the source code of the website can create an admin account in this way.
 
 Admin app (url: /admin) is where you can add new charities (e.g. RC Forward)
 or update their details (e.g. signature). Receipt Generator app (url: none yet)
