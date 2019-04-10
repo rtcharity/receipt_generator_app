@@ -1,5 +1,5 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from .models import Donor, Donation, Receipt
 
 def receipt_generator_index(request):
@@ -13,12 +13,8 @@ def add_donor(request):
     return render(request, 'receipt_generator/add_donor.html', context)
 
 def edit_donor(request, pk):
-    try:
-        donor = Donor.objects.get(pk=pk)
-    except Donor.DoesNotExist:
-        raise Http404("Donor does not exist")
     context = {
-        'donor': donor
+        'donor': get_object_or_404(Donor, pk=pk)
     }
     return render(request, 'receipt_generator/edit_donor.html', context)
     
@@ -27,27 +23,19 @@ def add_donation(request):
     return render(request, 'receipt_generator/add_donation.html', context)
 
 def edit_donation(request, pk):
-    try:
-        donation = Donation.objects.get(pk=pk)
-    except Donation.DoesNotExist:
-        raise Http404("Donation does not exist")
     context = {
-        'donation': donation
+        'donation': get_object_or_404(Donation, pk=pk)
     }
     return render(request, 'receipt_generator/edit_donation.html', context)
     
 def view_receipt(request, pk):
-    try:
-        receipt = Receipt.objects.get(pk=pk)
-    except Receipt.DoesNotExist:
-        raise Http404("Receipt does not exist")
     context = {
-        'receipt': receipt
+        'receipt': get_object_or_404(Receipt, pk=pk)
     }
     return render(request, 'receipt_generator/view_receipt.html', context)
     
 def list_donors(request):
     context = {
-        'donors': Donor.objects.all
+        'donors': get_list_or_404(Donor)
     }
     return render(request, 'receipt_generator/list_donors.html', context)
