@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+app_name = 'receipt_generator'
 urlpatterns = [
     path("", views.receipt_generator_index, name="receipt_generator_index"),
     path("donor/add", views.add_donor, name="add_donor"),
