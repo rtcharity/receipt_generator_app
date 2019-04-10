@@ -3,4 +3,14 @@
 {% block page_content %}
 <h1>All donors</h1>
 
+{% if donors %}
+    <ul>
+    {% for donor in donors %}
+        <li><a href="/donor/{{ donor.id }}/edit">{{ donor }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No donors are available.</p>
+{% endif %}
+
 {% endblock %}

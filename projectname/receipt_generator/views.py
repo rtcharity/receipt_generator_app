@@ -47,5 +47,7 @@ def view_receipt(request, pk):
     return render(request, 'receipt_generator/view_receipt.html', context)
     
 def list_donors(request):
-    context = {}
+    context = {
+        'donors': Donor.objects.all
+    }
     return render(request, 'receipt_generator/list_donors.html', context)
