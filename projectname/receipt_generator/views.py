@@ -6,11 +6,11 @@ def receipt_generator_index(request):
     context = {
         'welcome_message': 'Hello World!'
     }
-    return render(request, 'index.html', context)
+    return render(request, 'receipt_generator/index.html', context)
     
 def add_donor(request):
     context = {}
-    return render(request, 'add_donor.html', context)
+    return render(request, 'receipt_generator/add_donor.html', context)
 
 def edit_donor(request, pk):
     try:
@@ -20,11 +20,11 @@ def edit_donor(request, pk):
     context = {
         'donor': donor
     }
-    return render(request, 'edit_donor.html', context)
+    return render(request, 'receipt_generator/edit_donor.html', context)
     
 def add_donation(request):
     context = {}
-    return render(request, 'add_donation.html', context)
+    return render(request, 'receipt_generator/add_donation.html', context)
 
 def edit_donation(request, pk):
     try:
@@ -34,7 +34,7 @@ def edit_donation(request, pk):
     context = {
         'donation': donation
     }
-    return render(request, 'edit_donation.html', context)
+    return render(request, 'receipt_generator/edit_donation.html', context)
     
 def view_receipt(request, pk):
     try:
@@ -44,4 +44,4 @@ def view_receipt(request, pk):
     context = {
         'receipt': receipt
     }
-    return render(request, 'view_receipt.html', context)
+    return render(request, 'receipt_generator/view_receipt.html', context)
