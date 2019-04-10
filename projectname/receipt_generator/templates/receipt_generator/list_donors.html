@@ -6,7 +6,7 @@
 {% if donors %}
     <ul>
     {% for donor in donors %}
-        <li><a href="/donor/{{ donor.id }}/edit">{{ donor }}</a></li>
+        <li><a href="{% url 'edit_donor' donor.id %}">{{ donor }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
