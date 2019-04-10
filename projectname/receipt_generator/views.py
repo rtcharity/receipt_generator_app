@@ -45,3 +45,7 @@ def view_receipt(request, pk):
         'receipt': receipt
     }
     return render(request, 'receipt_generator/view_receipt.html', context)
+    
+def list_donors(request):
+    context = {}
+    return render(request, 'receipt_generator/list_donors.html', context)
