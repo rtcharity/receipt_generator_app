@@ -6,7 +6,7 @@
 {% if donors %}
     <ul>
     {% for donor in donors %}
-        <li><a href="{% url 'edit_donor' donor.id %}">{{ donor }}</a></li>
+        <li><a href="{% url 'receipt_generator:edit_donor' donor.id %}">{{ donor }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

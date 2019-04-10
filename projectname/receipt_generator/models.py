@@ -4,7 +4,8 @@ class Donor(models.Model):
     first_name = models.CharField(max_length=50)
     middle_initials = models.CharField(max_length=10)
     last_name = models.CharField(max_length=50)
-    address = models.TextField
+    address = models.TextField(
+        default='')
     email = models.EmailField(
         "Email address to receive tax receipts.",
         default=''
