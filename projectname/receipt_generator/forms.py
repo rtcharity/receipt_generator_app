@@ -1,6 +1,6 @@
 from django import forms
 
-class AddDonorForm(forms.Form):
+class DonorForm(forms.Form):
     first_name = forms.CharField(
         max_length=50,
         widget=forms.TextInput(attrs={

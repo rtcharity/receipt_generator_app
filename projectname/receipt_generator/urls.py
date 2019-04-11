@@ -8,6 +8,6 @@ urlpatterns = [
     path("donor/<int:pk>/edit", views.edit_donor, name="edit_donor"),
     path("donation/add", views.add_donation, name="add_donation"),
     path("donation/<int:pk>/edit", views.edit_donation, name="edit_donation"),
-    path("receipt/<int:pk>", views.view_receipt, name="view_receipt"),
+    path("receipt/<int:pk>", views.receipt_view, name="receipt_view"),
     path("donor", views.list_donors, name="list_donors"),
     ]

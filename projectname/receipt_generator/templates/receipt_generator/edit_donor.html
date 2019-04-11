@@ -3,7 +3,11 @@
 {% block page_content %}
 <h1>Edit donor '{{ donor.first_name }} {{ donor.middle_initials }} {{ donor.last_name }}'</h1>
 
-<p>{{ donor.address }}</p>
-<p>{{ donor.email }}</p>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="/donor/{{donor.id}}/edit" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Save">
+</form>
 
 {% endblock %}
