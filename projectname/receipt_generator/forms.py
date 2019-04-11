@@ -8,7 +8,7 @@ class DonorForm(forms.Form):
         max_length=50,
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "First Name"
+            "placeholder": "First Name",
         })
     )
     middle_initials = forms.CharField(

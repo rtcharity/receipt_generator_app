@@ -1,0 +1,14 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'receipt_generator:receipt_generator_index' %}">Home</a>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:add_donor' %}">
+            Create a <strong>donor</strong> record
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:add_donation' %}">
+            Create a <strong>donation</strong> record
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:list_donors' %}">
+            See all <strong>donor</strong> records (from here you can edit them)
+        </a></li>
+    </ul>
+</nav>

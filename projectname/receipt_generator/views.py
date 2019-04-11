@@ -121,16 +121,25 @@ def edit_donation(request, pk):
     }
     return render(request, 'receipt_generator/edit_donation.html', context)
     
-def receipt_view(request, pk):
+def view_receipt(request, pk):
     context = {
         'receipt': get_object_or_404(Receipt, pk=pk)
     }
-    return render(request, 'receipt_generator/receipt_view.html', context)
+    return render(request, 'receipt_generator/view_receipt.html', context)
     
 def list_donors(request):
     context = {
         'donors': get_list_or_404(Donor)
     }
     return render(request, 'receipt_generator/list_donors.html', context)
-    
+
+def view_donor(request, pk):
+    donor = get_object_or_404(Donor, pk=pk)
+    context = {
+        'donor': donor,
+        'form': DonorForm(model_to_dict(donor)),
+        'donations': Donation.objects.filter(donor=donor.id)
+    }
+    return render(request, 'receipt_generator/view_donor.html', context)
+
 
