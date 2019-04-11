@@ -1,10 +1,10 @@
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
-from .forms import DonorForm
 from django.views import generic
 from django.forms.models import model_to_dict
 
+from .forms import DonorForm, DonationForm
 from .models import Donor, Donation, Receipt
 
 def receipt_generator_index(request):
@@ -22,7 +22,6 @@ def add_donor(request):
     elif request.method == 'POST':
         form = DonorForm(request.POST)
         if form.is_valid():
-            print(request.POST)
             try:
                 new_donor = Donor(
                     first_name = request.POST['first_name'],
@@ -84,8 +83,37 @@ def edit_donor(request, pk):
                 })
 
 def add_donation(request):
-    context = {}
-    return render(request, 'receipt_generator/add_donation.html', context)
+    if request.method == 'GET':
+        context = {
+            'form': DonationForm()
+        }
+        return render(request, 'receipt_generator/add_donation.html', context)
+    elif request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            try:
+                new_donation = Donation(
+                    donor = Donor.objects.get(pk=request.POST['donor']),
+                    date_received = request.POST['date_received'],
+                    amount = request.POST['amount'],
+                    currency = request.POST['currency'],
+                )
+            except KeyError:
+                return render(request, 'receipt_generator/add_donation.html', {
+                    'error_message': "Error message.",
+                    'form': form
+                })
+            else:
+                new_donation.save()
+                return HttpResponseRedirect(reverse(
+                    'receipt_generator:edit_donation',
+                    args=str(new_donation.id)
+                    ))
+        else:
+            return render(request, 'receipt_generator/add_donation.html', {
+                    'error_message': "Error message.",
+                    'form': form
+                })
 
 def edit_donation(request, pk):
     context = {

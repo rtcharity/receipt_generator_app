@@ -19,7 +19,7 @@ class Donation(models.Model):
     date_received = models.DateField("The date the gift was received")
     amount = models.DecimalField(
         "The amount received",
-        max_digits=6,
+        max_digits=14,
         decimal_places=2
         )
     currency = models.CharField(

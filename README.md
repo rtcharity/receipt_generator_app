@@ -19,3 +19,6 @@ because I had already run migrations, so Django thought there was a risk of
 a donor object already existing which would need to have an email column added,
 which would require a default to have been specified. So just try not including
 a default from the get-go in v3 of app.
+
+- Work out why I had to move the flatpicker app from
+venv/lib64/python3.6/dist-packages into the project.
