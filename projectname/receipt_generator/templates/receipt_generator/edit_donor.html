@@ -5,11 +5,12 @@
 {% block page_content %}
 <h1>Edit donor '{{ donor.first_name }} {{ donor.middle_initials }} {{ donor.last_name }}'</h1>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
+{% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="/donor/{{donor.id}}/edit" method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Save">
+    {{ form.as_p }}
+    <input class="btn btn-success" type="submit" value="Save">
 </form>
 
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
@@ -5,7 +6,7 @@ from django.views import generic
 from django.forms.models import model_to_dict
 
 from .forms import DonorForm, DonationForm
-from .models import Donor, Donation, Receipt
+from .models import Donor, Donation, Receipt, Charity
 
 def receipt_generator_index(request):
     context = {
@@ -22,25 +23,28 @@ def add_donor(request):
     elif request.method == 'POST':
         form = DonorForm(request.POST)
         if form.is_valid():
+            new_donor = Donor(
+                first_name = request.POST['first_name'],
+                middle_initials = request.POST['middle_initials'],
+                last_name = request.POST['last_name'],
+                address = request.POST['address'],
+                email = request.POST['email'],
+            )
             try:
-                new_donor = Donor(
-                    first_name = request.POST['first_name'],
-                    middle_initials = request.POST['middle_initials'],
-                    last_name = request.POST['last_name'],
-                    address = request.POST['address'],
-                    email = request.POST['email'],
-                )
-            except KeyError:
+                new_donor.save()
+            except Exception as e:
                 return render(request, 'receipt_generator/add_donor.html', {
-                    'error_message': "Error message.",
+                    'error_message': e.__cause__,
                     'form': form
                 })
             else:
-                new_donor.save()
-                return HttpResponseRedirect(reverse('receipt_generator:list_donors'))
+                return render(request, 'receipt_generator/add_donation.html', {
+                    'success_message': "Successfully saved new donor!",
+                    'form': DonationForm(initial={'donor': new_donor.id}),
+                })
         else:
             return render(request, 'receipt_generator/add_donor.html', {
-                    'error_message': "Error message.",
+                    'error_message': "Invalid form",
                     'form': form
                 })
 
@@ -56,28 +60,28 @@ def edit_donor(request, pk):
         donor = get_object_or_404(Donor, pk=pk)
         form = DonorForm(request.POST)
         if form.is_valid():
+            donor.first_name = request.POST['first_name']
+            donor.middle_initials = request.POST['middle_initials']
+            donor.last_name = request.POST['last_name']
+            donor.address = request.POST['address']
+            donor.email = request.POST['email']
             try:
-                donor.first_name = request.POST['first_name']
-                donor.middle_initials = request.POST['middle_initials']
-                donor.last_name = request.POST['last_name']
-                donor.address = request.POST['address']
-                donor.email = request.POST['email']
-            except KeyError:
-                return render(request, 'receipt_generator/edit_donor.html', {
-                    'error_message': "Error message.",
+                donor.save()
+            except Exception as e:
+                return render(request, ('receipt_generator/edit_donor.html'), {
+                    'error_message': e.__cause__,
                     'form': form,
                     'donor': donor,
                 })
             else:
-                donor.save()
-                return render(request, 'receipt_generator/edit_donor.html', {
-                    'error_message': "Error message.",
-                    'form': form,
+                return render(request, 'receipt_generator/view_donor.html', {
+                    'success_message': "Successfully saved new donor information!",
+                    'form': DonorForm(model_to_dict(donor)),
                     'donor': donor,
                 })
         else:
             return render(request, 'receipt_generator/edit_donor.html', {
-                    'error_message': "Error message.",
+                    'error_message': "Invalid form",
                     'form': form,
                     'donor': donor,
                 })
@@ -91,35 +95,69 @@ def add_donation(request):
     elif request.method == 'POST':
         form = DonationForm(request.POST)
         if form.is_valid():
+            new_donation = Donation(
+                charity = Charity.objects.get(pk=request.POST['charity']),
+                donor = Donor.objects.get(pk=request.POST['donor']),
+                date_received = request.POST['date_received'],
+                amount = request.POST['amount'],
+                currency = request.POST['currency'],
+            )
             try:
-                new_donation = Donation(
-                    donor = Donor.objects.get(pk=request.POST['donor']),
-                    date_received = request.POST['date_received'],
-                    amount = request.POST['amount'],
-                    currency = request.POST['currency'],
-                )
-            except KeyError:
+                new_donation.save()
+            except Exception as e:
                 return render(request, 'receipt_generator/add_donation.html', {
-                    'error_message': "Error message.",
+                    'error_message': e.__cause__,
                     'form': form
                 })
             else:
-                new_donation.save()
-                return HttpResponseRedirect(reverse(
-                    'receipt_generator:edit_donation',
-                    args=str(new_donation.id)
-                    ))
+                return render(request, 'receipt_generator/edit_donation.html', {
+                    'success_message': "Successfully saved new donation!",
+                    'form': DonationForm(model_to_dict(new_donation)),
+                    'donation': new_donation,
+                })
         else:
             return render(request, 'receipt_generator/add_donation.html', {
-                    'error_message': "Error message.",
+                    'error_message': "Invalid form",
                     'form': form
                 })
-
+ 
 def edit_donation(request, pk):
-    context = {
-        'donation': get_object_or_404(Donation, pk=pk)
-    }
-    return render(request, 'receipt_generator/edit_donation.html', context)
+    if request.method == 'GET':
+        donation = get_object_or_404(Donation, pk=pk)
+        context = {
+            'form': DonationForm(model_to_dict(donation)),
+            'donation': donation
+        }
+        return render(request, 'receipt_generator/edit_donation.html', context)
+    elif request.method == 'POST':
+        donation = get_object_or_404(Donation, pk=pk)
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            donation.charity = Charity.objects.get(pk=request.POST['charity'])
+            donation.donor = Donor.objects.get(pk=request.POST['donor'])
+            donation.date_received = request.POST['date_received']
+            donation.amount = request.POST['amount']
+            donation.currency = request.POST['currency']
+            try:
+                donation.save()
+            except Exception as e:
+                return render(request, ('receipt_generator/edit_donation.html'), {
+                    'error_message': e.__cause__,
+                    'form': form,
+                    'donation': donation,
+                })
+            else:
+                return render(request, 'receipt_generator/edit_donation.html', {
+                    'success_message': "Successfully saved new donation information!",
+                    'form': DonationForm(model_to_dict(donation)),
+                    'donation': donation,
+                })
+        else:
+            return render(request, 'receipt_generator/edit_donation.html', {
+                    'error_message': "Invalid form",
+                    'form': form,
+                    'donation': donation,
+                })
     
 def view_receipt(request, pk):
     context = {
@@ -138,7 +176,9 @@ def view_donor(request, pk):
     context = {
         'donor': donor,
         'form': DonorForm(model_to_dict(donor)),
-        'donations': Donation.objects.filter(donor=donor.id)
+        'donations': Donation.objects
+            .filter(donor=donor.id)
+            .order_by('-date_received')
     }
     return render(request, 'receipt_generator/view_donor.html', context)
 

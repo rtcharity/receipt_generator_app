@@ -3,5 +3,14 @@
 {% block header %}{% include "receipt_generator/header.html"%}{% endblock %}
 
 {% block page_content %}
-<h1>Edit donation from {{ donation.donor.first_name }} {{ donation.donor.last_name }} of {{ donation.amount }} {{ donation.currency }}</h1>
+<h1>Edit donation</h1>
+
+{% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
+{% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="/donation/{{donation.id}}/edit" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-success" type="submit" value="Save">
+</form>
+
 {% endblock %}

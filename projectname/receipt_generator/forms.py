@@ -1,7 +1,7 @@
 from flatpickr import DatePickerInput
 from django import forms
 
-from .models import Donor
+from .models import Donor, Charity
 
 class DonorForm(forms.Form):
     first_name = forms.CharField(
@@ -39,15 +39,23 @@ class DonorForm(forms.Form):
     )
     
 class DonationForm(forms.Form):
-    all_donors = Donor.objects.all()
+    CHARITY_CHOICES = []
+    for charity in Charity.objects.all():
+        CHARITY_CHOICES.append((charity.id, charity))
+    charity = forms.ChoiceField(
+        widget=forms.Select(attrs={
+            "class": "form-control",
+        }),
+        choices=CHARITY_CHOICES,
+    )
     DONOR_CHOICES = []
-    for donor in all_donors:
+    for donor in Donor.objects.all():
         DONOR_CHOICES.append((donor.id, donor))
     donor = forms.ChoiceField(
         widget=forms.Select(attrs={
             "class": "form-control",
         }),
-        choices=DONOR_CHOICES
+        choices=DONOR_CHOICES,
     )
     date_received = forms.DateField(
         widget=DatePickerInput(attrs={
