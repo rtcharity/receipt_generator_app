@@ -10,7 +10,7 @@ from .models import Donor, Donation, Receipt, Charity
 
 def receipt_generator_index(request):
     context = {
-        'welcome_message': 'Hello World!'
+        'welcome_message': 'Hello Swirled!'
     }
     return render(request, 'receipt_generator/index.html', context)
     
@@ -38,9 +38,9 @@ def add_donor(request):
                     'form': form
                 })
             else:
-                return render(request, 'receipt_generator/add_donation.html', {
+                return render(request, 'receipt_generator/list_donors.html', {
                     'success_message': "Successfully saved new donor!",
-                    'form': DonationForm(initial={'donor': new_donor.id}),
+                    'donors': get_list_or_404(Donor),
                 })
         else:
             return render(request, 'receipt_generator/add_donor.html', {
