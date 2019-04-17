@@ -42,8 +42,8 @@ def add_donor(request):
                 })
 
 def edit_donor(request, pk):
+    donor = get_object_or_404(Donor, pk=pk)
     if request.method == 'GET':
-        donor = get_object_or_404(Donor, pk=pk)
         context = {
             'form': DonorForm(model_to_dict(donor)),
             'donor': donor
@@ -82,15 +82,8 @@ def add_donation(request):
     elif request.method == 'POST':
         form = DonationForm(request.POST)
         if form.is_valid():
-            new_donation = Donation(
-                charity = Charity.objects.get(pk=request.POST['charity']),
-                donor = Donor.objects.get(pk=request.POST['donor']),
-                date_received = request.POST['date_received'],
-                amount = request.POST['amount'],
-                currency = request.POST['currency'],
-            )
             try:
-                new_donation.save()
+                new_donation = form.process()
             except Exception as e:
                 return render(request, 'receipt_generator/add_donation.html', {
                     'error_message': e.__cause__,
@@ -109,24 +102,18 @@ def add_donation(request):
                 })
  
 def edit_donation(request, pk):
+    donation = get_object_or_404(Donation, pk=pk)
     if request.method == 'GET':
-        donation = get_object_or_404(Donation, pk=pk)
         context = {
             'form': DonationForm(model_to_dict(donation)),
             'donation': donation
         }
         return render(request, 'receipt_generator/edit_donation.html', context)
     elif request.method == 'POST':
-        donation = get_object_or_404(Donation, pk=pk)
         form = DonationForm(request.POST)
         if form.is_valid():
-            donation.charity = Charity.objects.get(pk=request.POST['charity'])
-            donation.donor = Donor.objects.get(pk=request.POST['donor'])
-            donation.date_received = request.POST['date_received']
-            donation.amount = request.POST['amount']
-            donation.currency = request.POST['currency']
             try:
-                donation.save()
+                donation = form.process(pk)
             except Exception as e:
                 return render(request, ('receipt_generator/edit_donation.html'), {
                     'error_message': e.__cause__,

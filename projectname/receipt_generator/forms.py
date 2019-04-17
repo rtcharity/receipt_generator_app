@@ -2,7 +2,7 @@ from flatpickr import DatePickerInput
 from django import forms
 from django.shortcuts import get_object_or_404
 
-from .models import Donor, Charity
+from .models import Donor, Charity, Donation
 
 class DonorForm(forms.Form):
     first_name = forms.CharField(
@@ -39,9 +39,8 @@ class DonorForm(forms.Form):
         })
     )
     
-    def process(self, pk=''):
+    def process(self, pk=False):
         data = self.cleaned_data
-        print(data)
         if pk:
             donor = get_object_or_404(Donor, pk=pk)
             donor.first_name = data['first_name']
@@ -99,3 +98,24 @@ class DonationForm(forms.Form):
         }),
         choices=CURRENCY_CHOICES
     )
+    
+    def process(self, pk=False):
+        data = self.cleaned_data
+        if pk:
+            donation = get_object_or_404(Donation, pk=pk)
+            donation.charity = Charity.objects.get(pk=data['charity'])
+            donation.donor = Donor.objects.get(pk=data['donor'])
+            donation.date_received = data['date_received']
+            donation.amount = data['amount']
+            donation.currency = data['currency']
+            donation.save()
+        else:
+            donation = Donation(
+                charity = Charity.objects.get(pk=data['charity']),
+                donor = Donor.objects.get(pk=data['donor']),
+                date_received = data['date_received'],
+                amount = data['amount'],
+                currency = data['currency'],
+            )
+            donation.save()
+        return donation
