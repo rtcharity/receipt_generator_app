@@ -1,6 +1,6 @@
 from django.db import IntegrityError
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 from django.forms.models import model_to_dict
@@ -23,15 +23,8 @@ def add_donor(request):
     elif request.method == 'POST':
         form = DonorForm(request.POST)
         if form.is_valid():
-            new_donor = Donor(
-                first_name = request.POST['first_name'],
-                middle_initials = request.POST['middle_initials'],
-                last_name = request.POST['last_name'],
-                address = request.POST['address'],
-                email = request.POST['email'],
-            )
             try:
-                new_donor.save()
+                new_donor = form.process()
             except Exception as e:
                 return render(request, 'receipt_generator/add_donor.html', {
                     'error_message': e.__cause__,
@@ -57,16 +50,10 @@ def edit_donor(request, pk):
         }
         return render(request, 'receipt_generator/edit_donor.html', context)
     elif request.method == 'POST':
-        donor = get_object_or_404(Donor, pk=pk)
         form = DonorForm(request.POST)
         if form.is_valid():
-            donor.first_name = request.POST['first_name']
-            donor.middle_initials = request.POST['middle_initials']
-            donor.last_name = request.POST['last_name']
-            donor.address = request.POST['address']
-            donor.email = request.POST['email']
             try:
-                donor.save()
+                donor = form.process(pk)
             except Exception as e:
                 return render(request, ('receipt_generator/edit_donor.html'), {
                     'error_message': e.__cause__,
@@ -110,10 +97,10 @@ def add_donation(request):
                     'form': form
                 })
             else:
-                return render(request, 'receipt_generator/edit_donation.html', {
-                    'success_message': "Successfully saved new donation!",
-                    'form': DonationForm(model_to_dict(new_donation)),
+                return render(request, 'receipt_generator/view_donation.html', {
+                    'success_message': "Successfully saved new donation information!",
                     'donation': new_donation,
+                    'form': DonationForm(model_to_dict(new_donation))
                 })
         else:
             return render(request, 'receipt_generator/add_donation.html', {
@@ -147,10 +134,10 @@ def edit_donation(request, pk):
                     'donation': donation,
                 })
             else:
-                return render(request, 'receipt_generator/edit_donation.html', {
+                return render(request, 'receipt_generator/view_donation.html', {
                     'success_message': "Successfully saved new donation information!",
-                    'form': DonationForm(model_to_dict(donation)),
                     'donation': donation,
+                    'form': DonationForm(model_to_dict(donation))
                 })
         else:
             return render(request, 'receipt_generator/edit_donation.html', {
@@ -182,4 +169,23 @@ def view_donor(request, pk):
     }
     return render(request, 'receipt_generator/view_donor.html', context)
 
+def view_donation(request, pk):
+    donation = get_object_or_404(Donation, pk=pk)
+    context = {
+        'donation': donation,
+        'form': DonationForm(model_to_dict(donation))
+    }
+    return render(request, 'receipt_generator/view_donation.html', context)
 
+def process_donation(request, pk):
+    # TODO:
+    # Check that they are not reloading the page and
+    # accidentally emailing people.
+    donation = get_object_or_404(Donation, pk=pk)
+    donation.generate_receipt_pdf()
+    donation.email_receipt_to_donor()
+    context = {
+        'success_message': "Success (or failure) message. donor at " + donation.donor.email,
+        'form': DonationForm()
+        }
+    return render(request, 'receipt_generator/add_donation.html', context)

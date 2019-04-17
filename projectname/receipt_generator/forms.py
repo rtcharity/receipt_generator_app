@@ -1,5 +1,6 @@
 from flatpickr import DatePickerInput
 from django import forms
+from django.shortcuts import get_object_or_404
 
 from .models import Donor, Charity
 
@@ -38,6 +39,28 @@ class DonorForm(forms.Form):
         })
     )
     
+    def process(self, pk=''):
+        data = self.cleaned_data
+        print(data)
+        if pk:
+            donor = get_object_or_404(Donor, pk=pk)
+            donor.first_name = data['first_name']
+            donor.middle_initials = data['middle_initials']
+            donor.last_name = data['last_name']
+            donor.address = data['address']
+            donor.email = data['email']
+            donor.save()
+        else:
+            donor = Donor(
+                first_name = data['first_name'],
+                middle_initials = data['middle_initials'],
+                last_name = data['last_name'],
+                address = data['address'],
+                email = data['email'],
+            )
+            donor.save()
+        return donor
+
 class DonationForm(forms.Form):
     CHARITY_CHOICES = []
     for charity in Charity.objects.all():
