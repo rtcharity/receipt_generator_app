@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'receipt_generator',
     'flatpickr',
+    'service_objects',
+    'reportlab'
 ]
 
 # This will automatically detect the absolute path to the settings.py file and
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
 # root.
 ENV_PATH = os.path.abspath(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(ENV_PATH, 'media/')
+MEDIA_URL = os.path.join(BASE_DIR, 'media/')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

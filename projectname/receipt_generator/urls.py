@@ -12,5 +12,5 @@ urlpatterns = [
     path("donor", views.list_donors, name="list_donors"),
     path("donor/<int:pk>", views.view_donor, name="view_donor"),
     path("donation/<int:pk>", views.view_donation, name="view_donation"),
-    path("donation/<int:pk>/process", views.process_donation, name="process_donation")
+    path("donation/<int:pk>/receipt/add", views.add_receipt, name="add_receipt")
     ]

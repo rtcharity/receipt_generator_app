@@ -13,7 +13,7 @@ class Donor(models.Model):
         )
         
     def __str__(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return '%s %s %s' % (self.first_name, self.middle_initials, self.last_name)
 
 # The charity which receives the gift first (i.e. not the destination charity.)
 # In the first release of this web app, the charity will
@@ -57,7 +57,9 @@ class Donation(models.Model):
 # This class exists in order to maintain unique receipt ids for each time
 # the user generates a receipt, and to associate receipts with donors/donations.
 class Receipt(models.Model):
+    STORAGE_DIR_NAME = 'receipts'
+    
     donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
-    receipt = models.FileField(upload_to='receipts')
+    receipt_pdf = models.FileField(upload_to=STORAGE_DIR_NAME)
     
     

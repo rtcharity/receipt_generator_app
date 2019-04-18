@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.forms.models import model_to_dict
 
+from .services import CreateReceipt
 from .forms import DonorForm, DonationForm
 from .models import Donor, Donation, Receipt, Charity
 
@@ -157,22 +158,32 @@ def view_donor(request, pk):
     return render(request, 'receipt_generator/view_donor.html', context)
 
 def view_donation(request, pk):
-    donation = get_object_or_404(Donation, pk=pk)
     context = {
-        'donation': donation,
+        'donation': get_object_or_404(Donation, pk=pk),
         'form': DonationForm(model_to_dict(donation))
     }
     return render(request, 'receipt_generator/view_donation.html', context)
 
-def process_donation(request, pk):
-    # TODO:
-    # Check that they are not reloading the page and
-    # accidentally emailing people.
+def add_receipt(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
-    donation.generate_receipt_pdf()
-    donation.email_receipt_to_donor()
+    donation_form = DonationForm(model_to_dict(donation))
+    # try:
+    receipt = CreateReceipt.execute({
+        'donation_pk': pk
+    })
+    # except Exception as e:
+    #     return render(request, ('receipt_generator/add_donation.html'), {
+    #                 'error_message': 'Something went wrong!',
+    #                 'donation_form': donation_form,
+    #             })
     context = {
-        'success_message': "Success (or failure) message. donor at " + donation.donor.email,
-        'form': DonationForm()
-        }
-    return render(request, 'receipt_generator/add_donation.html', context)
+        'success_message': 'Receipt generated and sent successfully',
+        'donation': donation,
+        'donation_form': donation_form,
+        'receipt': receipt
+    }
+    return render(request, 'receipt_generator/add_receipt.html', context)
+    
+     # TODO:
+     # Check that they are not reloading the page and
+     # accidentally emailing people.

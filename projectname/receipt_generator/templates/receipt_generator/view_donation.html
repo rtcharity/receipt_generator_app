@@ -3,18 +3,22 @@
 {% block header %}{% include "receipt_generator/header.html"%}{% endblock %}
 
 {% block page_content %}
-<h1>Edit donation</h1>
+<h1>View donation</h1>
 
 {% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
 {% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="/donation/{{donation.id}}/edit" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Save">
+<form>
+    <fieldset disabled="disabled">
+    {{ form.as_p }} 
+    </fieldset>
 </form>
 
-<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donor' donation.donor.id %}">
-    Edit donor details ({{ donation.donor }})
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donation' donation.id %}">
+    Edit this donation
+</a>
+
+<a class="btn btn-success" href="{% url 'receipt_generator:add_receipt' donation.id %}">
+    Generate tax receipt
 </a>
 
 {% endblock %}
