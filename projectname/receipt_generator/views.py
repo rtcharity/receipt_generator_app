@@ -10,9 +10,7 @@ from .forms import DonorForm, DonationForm
 from .models import Donor, Donation, Receipt, Charity
 
 def receipt_generator_index(request):
-    context = {
-        'welcome_message': 'Hello Swirled!'
-    }
+    context = {}
     return render(request, 'receipt_generator/index.html', context)
     
 def add_donor(request):
@@ -83,19 +81,19 @@ def add_donation(request):
     elif request.method == 'POST':
         form = DonationForm(request.POST)
         if form.is_valid():
-            try:
-                new_donation = form.process()
-            except Exception as e:
-                return render(request, 'receipt_generator/add_donation.html', {
-                    'error_message': e.__cause__,
-                    'form': form
-                })
-            else:
-                return render(request, 'receipt_generator/view_donation.html', {
-                    'success_message': "Successfully saved new donation information!",
-                    'donation': new_donation,
-                    'form': DonationForm(model_to_dict(new_donation))
-                })
+            # try:
+            new_donation = form.process()
+            # except Exception as e:
+            #     return render(request, 'receipt_generator/add_donation.html', {
+            #         'error_message': e.__cause__,
+            #         'form': form
+            #     })
+            # else:
+            return render(request, 'receipt_generator/view_donation.html', {
+                'success_message': "Successfully saved new donation information!",
+                'donation': new_donation,
+                'form': DonationForm(model_to_dict(new_donation))
+            })
         else:
             return render(request, 'receipt_generator/add_donation.html', {
                     'error_message': "Invalid form",
@@ -158,8 +156,9 @@ def view_donor(request, pk):
     return render(request, 'receipt_generator/view_donor.html', context)
 
 def view_donation(request, pk):
+    donation = get_object_or_404(Donation, pk=pk)
     context = {
-        'donation': get_object_or_404(Donation, pk=pk),
+        'donation': donation,
         'form': DonationForm(model_to_dict(donation))
     }
     return render(request, 'receipt_generator/view_donation.html', context)

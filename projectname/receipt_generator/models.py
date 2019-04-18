@@ -2,14 +2,16 @@ from django.db import models
 
 class Donor(models.Model):
     first_name = models.CharField(max_length=50)
-    middle_initials = models.CharField(max_length=10)
+    middle_initials = models.CharField(
+        max_length=10,
+        blank=True,
+        default=''
+        )
     last_name = models.CharField(max_length=50)
-    address = models.TextField(
-        default='')
+    address = models.TextField()
     email = models.EmailField(
         "Email address to receive tax receipts.",
-        default='',
-        unique=True
+        unique=True,
         )
         
     def __str__(self):
@@ -20,7 +22,7 @@ class Donor(models.Model):
 # always be RC Forward.
 class Charity(models.Model):
     name = models.CharField(max_length=50)
-    address = models.TextField
+    address = models.TextField()
     logo = models.FileField(upload_to='logos')
     signature = models.FileField(upload_to='signatures')
     registration = models.CharField(
@@ -29,7 +31,10 @@ class Charity(models.Model):
         )
     email = models.EmailField(
         "Email address to receive copies of tax receipts.",
-        default=''
+        )
+    revenue_agency = models.CharField(
+        "Revenue agency, e.g. IRS or CRA",
+        max_length=3,
         )
         
     def __str__(self):
@@ -41,7 +46,7 @@ class Charity(models.Model):
 class Donation(models.Model):
     charity = models.ForeignKey(
         Charity, on_delete=models.CASCADE,
-        default=1)
+        )
     donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
     date_received = models.DateField("The date the gift was received")
     amount = models.DecimalField(
@@ -53,6 +58,10 @@ class Donation(models.Model):
         "Currency abbreviation (e.g. USD/CAD)",
         max_length=3
         )
+        
+    def __str__(self):
+        return 'donation on %s by %s' % (self.date_received, self.donor)
+
 
 # This class exists in order to maintain unique receipt ids for each time
 # the user generates a receipt, and to associate receipts with donors/donations.
@@ -61,5 +70,9 @@ class Receipt(models.Model):
     
     donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
     receipt_pdf = models.FileField(upload_to=STORAGE_DIR_NAME)
+    
+    def __str__(self):
+        return 'Receipt for %s' % (self.donation)
+
     
     

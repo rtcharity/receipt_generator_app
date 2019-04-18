@@ -17,7 +17,8 @@ class DonorForm(forms.Form):
         widget=forms.TextInput(attrs={
             "class": "form-control",
             "placeholder": "Middle Initials"
-        })
+        }),
+        required=False
     )
     last_name = forms.CharField(
         max_length=50,
@@ -61,23 +62,17 @@ class DonorForm(forms.Form):
         return donor
 
 class DonationForm(forms.Form):
-    CHARITY_CHOICES = []
-    for charity in Charity.objects.all():
-        CHARITY_CHOICES.append((charity.id, charity))
-    charity = forms.ChoiceField(
+    charity = forms.ModelChoiceField(
         widget=forms.Select(attrs={
             "class": "form-control",
         }),
-        choices=CHARITY_CHOICES,
+        queryset=Charity.objects.all(),
     )
-    DONOR_CHOICES = []
-    for donor in Donor.objects.all():
-        DONOR_CHOICES.append((donor.id, donor))
-    donor = forms.ChoiceField(
+    donor = forms.ModelChoiceField(
         widget=forms.Select(attrs={
             "class": "form-control",
         }),
-        choices=DONOR_CHOICES,
+        queryset=Donor.objects.all(),
     )
     date_received = forms.DateField(
         widget=DatePickerInput(attrs={
@@ -101,18 +96,19 @@ class DonationForm(forms.Form):
     
     def process(self, pk=False):
         data = self.cleaned_data
+        print(data)
         if pk:
             donation = get_object_or_404(Donation, pk=pk)
-            donation.charity = Charity.objects.get(pk=data['charity'])
-            donation.donor = Donor.objects.get(pk=data['donor'])
+            donation.charity = data['charity']
+            donation.donor = data['donor']
             donation.date_received = data['date_received']
             donation.amount = data['amount']
             donation.currency = data['currency']
             donation.save()
         else:
             donation = Donation(
-                charity = Charity.objects.get(pk=data['charity']),
-                donor = Donor.objects.get(pk=data['donor']),
+                charity = data['charity'],
+                donor = data['donor'],
                 date_received = data['date_received'],
                 amount = data['amount'],
                 currency = data['currency'],

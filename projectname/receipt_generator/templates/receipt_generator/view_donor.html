@@ -31,7 +31,7 @@
             {% for donation in donations %}
                 <tr>
                     <td>
-                        <a href="{% url 'receipt_generator:edit_donation' donation.id %}">
+                        <a href="{% url 'receipt_generator:view_donation' donation.id %}">
                             {{ donation.date_received }}
                         </a>
                     </td>
