@@ -1,0 +1,7 @@
+Django==2.1.8
+django-flatpickr==1.0.1
+django-service-objects==0.5.0
+Pillow==6.0.0
+pytz==2019.1
+reportlab==3.5.19
+six==1.12.0
