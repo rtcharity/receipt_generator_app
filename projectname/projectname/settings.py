@@ -29,7 +29,10 @@ SECRET_KEY = '6=&3wtqsoxb8kelnyqm^o%w=c@@g4$%#%y=7shul5z*344bhh='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['9c3614e073d147e29c4dd442a73128ae.vfs.cloud9.eu-west-1.amazonaws.com']
+ALLOWED_HOSTS = [
+    'rc4-mockup-dev.us-west-2.elasticbeanstalk.com',
+    'e5b190d590e4414ba3223b674ce252e3.vfs.cloud9.eu-west-1.amazonaws.com'
+    ]
 
 
 # Application definition
