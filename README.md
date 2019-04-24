@@ -1,5 +1,25 @@
-## To use the admin side of the site
+## Local installation
 
+```
+git init
+git pull https://github.com/david-mears/rc4-mock-up
+virtualenv ./elasticb-virt
+source ./elasticb-virt/bin/activate
+cd projectname/
+pip install -r requirements.txt
+```
+
+## Run local server
+
+`cd` to rc4-mockup/projectname
+```
+python3.6 manage.py runserver
+```
+Add `8080` to command if using AWS.
+
+## To enable the admin side of the site
+
+`cd` to rc4-mockup/projectname
 ```
 python3.6 manage.py createsuperuser
 ```
