@@ -8,7 +8,7 @@ class Donor(models.Model):
         default=''
         )
     last_name = models.CharField(max_length=50)
-    address = models.TextField()
+    address = models.TextField(max_length=500)
     email = models.EmailField(
         "Email address to receive tax receipts.",
         unique=True,
@@ -22,7 +22,7 @@ class Donor(models.Model):
 # always be RC Forward.
 class Charity(models.Model):
     name = models.CharField(max_length=50)
-    address = models.TextField()
+    address = models.TextField(max_length=500)
     logo = models.FileField(upload_to='logos')
     signature = models.FileField(upload_to='signatures')
     registration = models.CharField(
