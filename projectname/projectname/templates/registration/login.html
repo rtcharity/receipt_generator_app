@@ -34,7 +34,8 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
-{# Assumes you setup the password_reset view in your URLconf #}
+<p>If you have admin privileges, you can create users in the admin side of the site <a href="/admin/auth/user/add/">here</a>.</p>
+
 <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 
 {% endblock %}

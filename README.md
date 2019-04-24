@@ -20,6 +20,8 @@ python3.6 manage.py runserver
 ```
 Add `8080` to command if using AWS.
 
+You may need to add the host url to ALLOWED_HOSTS in settings.py.
+
 ## To enable the admin side of the site
 
 `cd` to rc4-mockup/projectname
