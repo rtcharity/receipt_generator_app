@@ -29,11 +29,7 @@ SECRET_KEY = '6=&3wtqsoxb8kelnyqm^o%w=c@@g4$%#%y=7shul5z*344bhh='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'rc4-mockup-dev.us-west-2.elasticbeanstalk.com',
-    'e5b190d590e4414ba3223b674ce252e3.vfs.cloud9.eu-west-1.amazonaws.com'
-    ]
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -49,6 +45,9 @@ INSTALLED_APPS = [
     'service_objects',
     'reportlab'
 ]
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/'
 
 # This will automatically detect the absolute path to the settings.py file and
 # then append media/ to it given you a dynamically generated path to your media
@@ -69,12 +68,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'projectname.urls'
 
-# STATIC_URL = 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["projectname/templates/"],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'projectname/templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,10 +139,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')

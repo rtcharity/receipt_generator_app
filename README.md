@@ -7,7 +7,10 @@ virtualenv ./elasticb-virt
 source ./elasticb-virt/bin/activate
 cd projectname/
 pip install -r requirements.txt
+python3.6 manage.py migrate
 ```
+
+Migrate creates empty database.
 
 ## Run local server
 
