@@ -3,14 +3,14 @@
 ```
 git init
 git pull https://github.com/david-mears/rc4-mock-up
-virtualenv ./elasticb-virt
-source ./elasticb-virt/bin/activate
 cd projectname/
 pip install -r requirements.txt
 python3.6 manage.py migrate
 ```
 
 Migrate creates empty database.
+
+If admin site css is missing, `python3.6 manage.py collectstatic`
 
 ## Run local server
 
@@ -30,5 +30,3 @@ python3.6 manage.py createsuperuser
 ```
 
 Define the required details for the admin account. Anyone who can edit the source code of the website and deploy can create an admin account in this way.
-
-Admin app (url: /admin) is where you can add new charities (e.g. RC Forward) or update their details (e.g. signature). Receipt Generator app (url: /) is where you go to create receipts.

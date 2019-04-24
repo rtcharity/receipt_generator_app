@@ -47,7 +47,9 @@ class Donation(models.Model):
     charity = models.ForeignKey(
         Charity, on_delete=models.CASCADE,
         )
-    donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
+    donor = models.ForeignKey(
+        Donor, on_delete=models.CASCADE,
+        )
     date_received = models.DateField("The date the gift was received")
     amount = models.DecimalField(
         "The amount received",
