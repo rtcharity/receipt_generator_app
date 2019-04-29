@@ -36,6 +36,10 @@ class Charity(models.Model):
         "Revenue agency, e.g. IRS or CRA",
         max_length=3,
         )
+    earmark_options = models.TextField(
+        "Earmarking options (separated by a new line)",
+        blank=True,
+        )
         
     def __str__(self):
         return self.name
@@ -59,6 +63,11 @@ class Donation(models.Model):
     currency = models.CharField(
         "Currency abbreviation (e.g. USD/CAD)",
         max_length=3
+        )
+    earmark = models.CharField(
+            "Earmarked for (can be blank)",
+            blank=True,
+            max_length = 50,
         )
         
     def __str__(self):
