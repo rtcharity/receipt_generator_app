@@ -80,10 +80,7 @@ def edit_donor(request, pk):
 @login_required
 def add_donation(request):
     if request.method == 'GET':
-        context = {
-            'form': DonationForm()
-        }
-        return render(request, 'receipt_generator/add_donation.html', context)
+        return HttpResponseRedirect('/choose_charity')
     elif request.method == 'POST':
         charity = get_object_or_404(Charity, pk=request.POST['charity'])
         form = DonationForm(charity, request.POST)
@@ -173,14 +170,14 @@ def view_donation(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
     context = {
         'donation': donation,
-        'form': DonationForm(model_to_dict(donation))
+        'form': DonationForm(donation.charity, model_to_dict(donation))
     }
     return render(request, 'receipt_generator/view_donation.html', context)
 
 @login_required
 def add_receipt(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
-    donation_form = DonationForm(model_to_dict(donation))
+    donation_form = DonationForm(donation.charity, model_to_dict(donation))
     
     try:
         receipt = CreateReceipt.execute({
@@ -213,8 +210,6 @@ def choose_charity(request):
             try:
                 charity = get_object_or_404(Charity, pk=request.POST['charity'])
                 form = DonationForm(charity=charity)
-                print('form:')
-                print(form)
                 context = {
                     'form': form
                     }
