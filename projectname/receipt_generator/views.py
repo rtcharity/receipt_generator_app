@@ -164,12 +164,24 @@ def view_donor(request, pk):
     donor = get_object_or_404(Donor, pk=pk)
     donations = Donation.objects.filter(donor=donor.id).order_by('-date_received')
     last_year = timezone.now().year - 1
+    annual_donations = donations.filter(date_received__year=last_year)
+    totals = {}
+    for donation in annual_donations:
+        if donation.currency not in totals.keys():
+            totals[donation.currency] = 0
+        totals[donation.currency] += donation.amount
+    total_message = []
+    for currency in totals.keys():
+        total_message.append('%s - %s' % (currency, totals[currency]))
+    if len(annual_donations) == 0:
+        total_message.append('No donations for this period.')
     context = {
         'donor': donor,
         'form': DonorForm(model_to_dict(donor)),
         'donations': donations,
         'last_year': last_year,
-        'annual_donations': donations.filter(date_received__year=last_year)
+        'annual_donations': annual_donations,
+        'total_message': total_message,
     }
     return render(request, 'receipt_generator/view_donor.html', context)
 

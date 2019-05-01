@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th> Date </th>
+            <th> Donor </th>
             <th> Charity </th>
             <th> Amount </th>
             <th> Currency </th>
@@ -14,6 +15,11 @@
                 <td>
                     <a href="{% url 'receipt_generator:view_donation' donation.id %}">
                         {{ donation.date_received }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'receipt_generator:view_donor' donation.donor.id %}">
+                        {{ donation.donor }}
                     </a>
                 </td>
                 <td>{{ donation.charity }}</td>
