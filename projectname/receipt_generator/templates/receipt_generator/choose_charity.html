@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-<h1>Add donation</h1>
+<h1>Choose a recipient charity:</h1>
+
 {% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
 {% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
-{{ form.media }}  {# Adds all flatpickr JS/CSS files from CDN #}
-<form action="/donation/add" method="post">
+<form action="/choose_charity" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Save">
+    <input class="btn btn-success" type="submit" value="Proceed">
 </form>
+
+<a href='/admin/receipt_generator/charity/add/'>
+    Click here to add a new charity.
+</a>
 
 {% endblock %}

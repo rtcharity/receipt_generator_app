@@ -44,6 +44,13 @@ class Charity(models.Model):
     def __str__(self):
         return self.name
         
+    def list_earmark_options(self, text):
+        lines = text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            cleaned_lines.append(line.replace('\r', ''))
+        return cleaned_lines
+        
     class Meta:
         verbose_name_plural = 'Charities'
 
