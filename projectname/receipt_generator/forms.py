@@ -162,3 +162,11 @@ class CharityChoiceForm(forms.Form):
         queryset=Charity.objects.all(),
     )
     
+class DonorChoiceForm(forms.Form):
+    donor = forms.ModelChoiceField(
+        widget=forms.Select(attrs={
+            "class": "form-control",
+        }),
+        queryset=Donor.objects.all(),
+    )
+    

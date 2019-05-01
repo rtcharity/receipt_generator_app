@@ -14,4 +14,5 @@ urlpatterns = [
     path("donation/<int:pk>", views.view_donation, name="view_donation"),
     path("donation/<int:pk>/receipt/add", views.add_receipt, name="add_receipt"),
     path("choose_charity", views.choose_charity, name="choose_charity"),
+    path("donations", views.list_donations, name="list_donations"),
     ]

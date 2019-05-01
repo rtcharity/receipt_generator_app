@@ -16,8 +16,8 @@
 </a>
 
 {% if donations %}
-    <br/>
-    <p>All donations:</p>
+    <br/><br/>
+    <p>All donations by {{ donor }}:</p>
     {% block overall_table %}
         {% with donations as donations %}
             {% include "receipt_generator/donations_table.html" %}
