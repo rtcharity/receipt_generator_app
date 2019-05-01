@@ -8,7 +8,7 @@ from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 
 from .services import CreateReceipt
-from .forms import DonorForm, DonationForm, CharityChoiceForm
+from .forms import DonorForm, DonationForm, CharityChoiceForm, DonorChoiceForm
 from .models import Donor, Donation, Receipt, Charity
 
 @login_required
@@ -80,10 +80,7 @@ def edit_donor(request, pk):
 @login_required
 def add_donation(request):
     if request.method == 'GET':
-        context = {
-            'form': DonationForm()
-        }
-        return render(request, 'receipt_generator/add_donation.html', context)
+        return HttpResponseRedirect('/choose_charity')
     elif request.method == 'POST':
         charity = get_object_or_404(Charity, pk=request.POST['charity'])
         form = DonationForm(charity, request.POST)
@@ -99,7 +96,7 @@ def add_donation(request):
                 return render(request, 'receipt_generator/view_donation.html', {
                     'success_message': "Successfully saved new donation information!",
                     'donation': new_donation,
-                    'form': DonationForm(charity, model_to_dict(new_donation))
+                    'donations': [new_donation]
                 })
         else:
             return render(request, 'receipt_generator/add_donation.html', {
@@ -149,10 +146,18 @@ def view_receipt(request, pk):
     
 @login_required
 def list_donors(request):
-    context = {
-        'donors': get_list_or_404(Donor)
-    }
-    return render(request, 'receipt_generator/list_donors.html', context)
+    if request.method == 'GET':
+        order_by = request.GET.get('order_by', 'last_name')
+        donors = Donor.objects.all().order_by(order_by)
+        if request.GET.get('sort') == 'descend':
+            donors = donors.reverse()
+        context = {
+            'donors': donors,
+            'form': DonorChoiceForm(),
+        }
+        return render(request, 'receipt_generator/list_donors.html', context)
+    elif request.method == 'POST':
+        return HttpResponseRedirect('/donor/%s' % request.POST['donor'])
 
 @login_required
 def view_donor(request, pk):
@@ -172,15 +177,15 @@ def view_donor(request, pk):
 def view_donation(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
     context = {
+        'donations': [donation],
         'donation': donation,
-        'form': DonationForm(model_to_dict(donation))
     }
     return render(request, 'receipt_generator/view_donation.html', context)
 
 @login_required
 def add_receipt(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
-    donation_form = DonationForm(model_to_dict(donation))
+    donation_form = DonationForm(donation.charity, model_to_dict(donation))
     
     try:
         receipt = CreateReceipt.execute({
@@ -213,8 +218,6 @@ def choose_charity(request):
             try:
                 charity = get_object_or_404(Charity, pk=request.POST['charity'])
                 form = DonationForm(charity=charity)
-                print('form:')
-                print(form)
                 context = {
                     'form': form
                     }
@@ -231,3 +234,13 @@ def choose_charity(request):
                     'form': form,
                 })
 
+@login_required
+def list_donations(request):
+    order_by = request.GET.get('order_by', 'date_received')
+    donations = Donation.objects.all().order_by(order_by)
+    if request.GET.get('sort') == 'descend':
+        donations = donations.reverse()
+    context = {
+        'donations': donations,
+    }
+    return render(request, 'receipt_generator/list_donations.html', context)
