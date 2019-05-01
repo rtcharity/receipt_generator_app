@@ -62,12 +62,8 @@ class DonorForm(forms.Form):
         return donor
 
 class DonationForm(forms.Form):
-    charity = forms.ModelChoiceField(
-        widget=forms.Select(attrs={
-            "class": "form-control",
-        }),
-        queryset=Charity.objects.all(),
-    )
+    CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
+    
     donor = forms.ModelChoiceField(
         widget=forms.Select(attrs={
             "class": "form-control",
@@ -86,7 +82,6 @@ class DonationForm(forms.Form):
             "class": "form-control",
         })
     )
-    CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
     currency = forms.ChoiceField(
         widget=forms.Select(attrs={
             "class": "form-control",
@@ -94,9 +89,50 @@ class DonationForm(forms.Form):
         choices=CURRENCY_CHOICES
     )
     
+    def __init__(self, charity, *args, **kwargs):
+        super(DonationForm, self).__init__(*args, **kwargs)
+        choices = [('', 'None'),  ('Add new', 'Add new')]
+        earmark_options_list = charity.list_earmark_options(text=charity.earmark_options)
+        for option in earmark_options_list:
+            choices.append((option, option))
+        if self.data:
+            earmark = self.data['earmark']
+            earmark_exists = True
+        else:
+            earmark_exists = False
+        if earmark_exists and earmark not in earmark_options_list:
+            choices.append((earmark, earmark))
+        self.fields['charity'] = forms.ModelChoiceField(
+            widget=forms.Select(attrs={
+                "class": "form-control",
+                "readonly": True,
+            }),
+            queryset=Charity.objects.all(),
+            initial=charity
+        )
+        self.fields['earmark'] = forms.ChoiceField(
+            widget=forms.Select(attrs={
+            "class": "form-control",
+            }),
+            choices = choices,
+            required = False,
+        )
+        self.fields['other_earmark'] = forms.CharField(
+            label='Optionally add a new earmark (will override drop-down selection):',
+            widget=forms.TextInput(attrs={
+                "class": "form-control",
+            }),
+            required=False,
+            )
+
     def process(self, pk=False):
         data = self.cleaned_data
-        print(data)
+        earmark = data['earmark']
+        if bool(data['other_earmark']):
+            earmark = data['other_earmark']
+            charity = get_object_or_404(Charity, pk=data['charity'].id)
+            charity.earmark_options = data['charity'].earmark_options + ('\n' + earmark)
+            charity.save()
         if pk:
             donation = get_object_or_404(Donation, pk=pk)
             donation.charity = data['charity']
@@ -104,6 +140,7 @@ class DonationForm(forms.Form):
             donation.date_received = data['date_received']
             donation.amount = data['amount']
             donation.currency = data['currency']
+            donation.earmark = earmark
             donation.save()
         else:
             donation = Donation(
@@ -112,6 +149,16 @@ class DonationForm(forms.Form):
                 date_received = data['date_received'],
                 amount = data['amount'],
                 currency = data['currency'],
+                earmark = earmark,
             )
             donation.save()
         return donation
+        
+class CharityChoiceForm(forms.Form):
+    charity = forms.ModelChoiceField(
+        widget=forms.Select(attrs={
+            "class": "form-control",
+        }),
+        queryset=Charity.objects.all(),
+    )
+    
