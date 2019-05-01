@@ -24,6 +24,17 @@
         {% endwith%}
     {% endblock %}
     <br/>
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-title">Total for {{ last_year }}:</h6>
+            <div class="card-text">
+            {% for line in total_message %}
+                {{ line }}</br>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br/>
     <p>All donations from {{ last_year }}:</p>
     {% if annual_donations %}
         {% block annual_table %}
