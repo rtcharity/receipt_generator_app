@@ -5,8 +5,11 @@
 
 <p>Begin typing the first name in the drop-down, or <a href="?order_by=last_name">sort the table by last name.</a></p>
 <br/>
-{% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
-{% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
 <form action="/donor" method="post">
     {% csrf_token %}
     {{ form.as_p }}
