@@ -3,8 +3,9 @@
 {% block page_content %}
 <h1>View donor '{{ donor }}'</h1>
 
-{% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
-{% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
 <form>
     <fieldset disabled="disabled">
     {{ form.as_p }} 

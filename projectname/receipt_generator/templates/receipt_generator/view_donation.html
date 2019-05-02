@@ -3,6 +3,10 @@
 {% block page_content %}
 <h1>View donation</h1>
 
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
 {% block table %}
     {% with donations as donations %}
         {% include "receipt_generator/donations_table.html" %}
