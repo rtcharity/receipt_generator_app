@@ -14,8 +14,6 @@ from .models import Donor, Donation, Receipt, Charity
 
 @login_required
 def receipt_generator_index(request):
-    import os
-    print('asdf' + os.environ.get('DATABASE_NAME'))
     context = {}
     return render(request, 'receipt_generator/index.html', context)
 
