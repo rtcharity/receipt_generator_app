@@ -107,7 +107,7 @@ class DonationForm(forms.Form):
                 "class": "form-control",
             }),
             choices=CURRENCY_CHOICES,
-            initial=charity.registration
+            initial=(charity.registration, charity.registration)
         )
         self.fields['earmark'] = forms.ChoiceField(
             widget=forms.Select(attrs={
