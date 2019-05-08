@@ -65,7 +65,6 @@ class DonationForm(forms.Form):
     
     def __init__(self, charity, *args, **kwargs):
         super(DonationForm, self).__init__(*args, **kwargs)
-        
         choices = [('', 'None'),  ('Add new', 'Add new')]
         earmark_options_list = charity.list_earmark_options(text=charity.earmark_options)
         for option in earmark_options_list:
@@ -77,6 +76,14 @@ class DonationForm(forms.Form):
             earmark_exists = False
         if earmark_exists and earmark not in earmark_options_list:
             choices.append((earmark, earmark))
+        self.fields['charity'] = forms.ModelChoiceField(
+            widget=forms.Select(attrs={
+                "class": "form-control",
+                "readonly": True,
+            }),
+            queryset=Charity.objects.all(),
+            initial=charity
+        )
         self.fields['donor'] = forms.ModelChoiceField(
             widget=forms.Select(attrs={
                 "class": "form-control",
@@ -101,14 +108,6 @@ class DonationForm(forms.Form):
             }),
             choices=CURRENCY_CHOICES,
             initial=charity.registration
-        )
-        self.fields['charity'] = forms.ModelChoiceField(
-            widget=forms.Select(attrs={
-                "class": "form-control",
-                "readonly": True,
-            }),
-            queryset=Charity.objects.all(),
-            initial=charity
         )
         self.fields['earmark'] = forms.ChoiceField(
             widget=forms.Select(attrs={
