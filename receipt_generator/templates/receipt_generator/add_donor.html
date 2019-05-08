@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Add donor</h1>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
+<form action="/donor/add" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-success" type="submit" value="Save">
+</form>
+
+{% endblock %}

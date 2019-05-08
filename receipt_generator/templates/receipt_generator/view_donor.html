@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>View donor '{{ donor }}'</h1>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+<form>
+    <fieldset disabled="disabled">
+    {{ form.as_p }} 
+    </fieldset>
+</form>
+
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donor' donor.id %}">
+    Edit this donor
+</a>
+
+{% if donations %}
+    <br/><br/>
+    <p>All donations by {{ donor }}:</p>
+    {% block overall_table %}
+        {% with donations as donations %}
+            {% include "receipt_generator/donations_table.html" %}
+        {% endwith%}
+    {% endblock %}
+    <br/>
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-title">Total for {{ last_year }}:</h6>
+            <div class="card-text">
+            {% for line in total_message %}
+                {{ line }}</br>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br/>
+    <p>All donations from {{ last_year }}:</p>
+    {% if annual_donations %}
+        {% block annual_table %}
+            {% with annual_donations as donations %}
+                {% include "receipt_generator/donations_table.html" %}
+            {% endwith%}
+        {% endblock %}
+    {% else %}
+        <p>No donations are available.</p>
+    {% endif %}
+{% else %}
+    <p>No donations are available.</p>
+{% endif %}
+{% endblock %}

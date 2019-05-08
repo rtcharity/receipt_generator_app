@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Edit donation</h1>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
+<form action="/donation/{{donation.id}}/edit" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-success" type="submit" value="Save">
+</form>
+
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donor' donation.donor.id %}">
+    Edit donor details ({{ donation.donor }})
+</a>
+
+{% endblock %}

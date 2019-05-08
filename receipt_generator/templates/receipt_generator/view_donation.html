@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>View donation</h1>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
+{% block table %}
+    {% with donations as donations %}
+        {% include "receipt_generator/donations_table.html" %}
+    {% endwith%}
+{% endblock %}
+
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donation' donation.id %}">
+    Edit this donation
+</a>
+
+<a class="btn btn-success" href="{% url 'receipt_generator:add_receipt' donation.id %}">
+    Generate and send tax receipt
+</a>
+
+{% endblock %}

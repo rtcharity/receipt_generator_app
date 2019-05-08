@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Added a receipt</h1>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
+<form>
+    <fieldset disabled="disabled">
+    {{ donation_form.as_p }} 
+    </fieldset>
+</form>
+
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donation' donation.id %}">
+    Edit this donation
+</a>
+
+<a class="btn btn-primary" href="{% url 'receipt_generator:edit_donor' donation.donor.id %}">
+    Edit donor details
+</a>
+
+{% endblock %}

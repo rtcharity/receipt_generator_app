@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>All donors</h1>
+
+<p>Begin typing the first name in the drop-down, or <a href="?order_by=last_name">sort the table by last name.</a></p>
+<br/>
+
+{% block messages %}
+    {% include "receipt_generator/messages.html" %}
+{% endblock %}
+
+<form action="/donor" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-success" type="submit" value="View donor details">
+</form>
+
+{% if donors %}
+    <br/>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    <a href="?order_by=last_name&sort=descend">&darr;</a>Name<a href="?order_by=last_name&sort=ascend">&uarr;</a>
+                </th>
+                <th>
+                    <a href="?order_by=email&sort=descend">&darr;</a>Email Address<a href="?order_by=email&sort=ascend">&uarr;</a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donor in donors %}
+                <tr>
+                    <td>
+                        <a href="{% url 'receipt_generator:edit_donor' donor.id %}">
+                            Edit
+                        </a>
+                        /
+                        <a href="{% url 'receipt_generator:view_donor' donor.id %}">
+                            View
+                        </a>
+                    </td>
+                    </td>
+                    <td>
+                        {{ donor }}
+                    </td>
+                    <td>
+                        <a href="mailto:{{donor.email}}">
+                            {{ donor.email }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br/>
+{% else %}
+    <p>No donors are available.</p>
+{% endif %}
+
+{% endblock %}

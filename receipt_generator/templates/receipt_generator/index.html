@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Welcome {{ user.get_username }}!</h1>
+<h2>Get ready to generate some receipts!</h2>
+
+<ul>
+    <li><a href="{% url 'receipt_generator:add_donor' %}">
+        Create a <strong>donor</strong> record
+    </a></li>
+    <li><a href="{% url 'receipt_generator:choose_charity' %}">
+        Create a <strong>donation</strong> record
+    </a></li>
+    <li><a href="{% url 'receipt_generator:list_donors' %}">
+        List <strong>donor</strong> records
+    </a></li>
+    <li><a href="{% url 'receipt_generator:list_donations' %}">
+        List <strong>donation</strong> records
+    </a></li>
+    {% if user.is_authenticated %}
+        <li ><a href="{% url 'logout'%}?next={{request.path}}">
+            Logout {{ user.get_username }}
+        </a></li>   
+    {% else %}
+        <li ><a href="{% url 'login'%}?next={{request.path}}">
+            Login
+        </a></li> 
+    {% endif %} 
+    <li><a href="/admin">
+        Go to admin interface
+    </a></li>
+</ul>
+
+{% endblock %}
