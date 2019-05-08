@@ -35,7 +35,6 @@ ALLOWED_HOSTS = [os.environ['WEBSITE_SITE_NAME'] + '.azurewebsites.net', '127.0.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -59,6 +58,7 @@ MEDIA_URL = os.path.join(BASE_DIR, 'media/')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
