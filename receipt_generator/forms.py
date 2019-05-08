@@ -101,13 +101,16 @@ class DonationForm(forms.Form):
                 "class": "form-control",
             })
         )
-        CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
+        reg = charity.registration
+        if reg == 'CRA':
+            CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
+        else:
+            CURRENCY_CHOICES = [('USD', 'USD'), ('CAD', 'CAD')]
         self.fields['currency'] = forms.ChoiceField(
             widget=forms.Select(attrs={
                 "class": "form-control",
             }),
             choices=CURRENCY_CHOICES,
-            initial=(charity.registration, charity.registration)
         )
         self.fields['earmark'] = forms.ChoiceField(
             widget=forms.Select(attrs={
