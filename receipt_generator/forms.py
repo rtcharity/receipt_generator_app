@@ -86,11 +86,13 @@ class DonationForm(forms.Form):
         widget=forms.Select(attrs={
             "class": "form-control",
         }),
-        choices=CURRENCY_CHOICES
+        choices=CURRENCY_CHOICES,
+        initial=self.registration
     )
     
     def __init__(self, charity, *args, **kwargs):
         super(DonationForm, self).__init__(*args, **kwargs)
+        self.registration = charity.registration
         choices = [('', 'None'),  ('Add new', 'Add new')]
         earmark_options_list = charity.list_earmark_options(text=charity.earmark_options)
         for option in earmark_options_list:
