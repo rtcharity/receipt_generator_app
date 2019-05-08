@@ -62,37 +62,10 @@ class DonorForm(forms.Form):
         return donor
 
 class DonationForm(forms.Form):
-    CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
-    
-    donor = forms.ModelChoiceField(
-        widget=forms.Select(attrs={
-            "class": "form-control",
-        }),
-        queryset=Donor.objects.all(),
-    )
-    date_received = forms.DateField(
-        widget=DatePickerInput(attrs={
-            "class": "form-control",
-        })
-    )
-    amount = forms.DecimalField(
-        # max_length=14,
-        decimal_places=2,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-        })
-    )
-    currency = forms.ChoiceField(
-        widget=forms.Select(attrs={
-            "class": "form-control",
-        }),
-        choices=CURRENCY_CHOICES,
-        initial=self.registration
-    )
     
     def __init__(self, charity, *args, **kwargs):
         super(DonationForm, self).__init__(*args, **kwargs)
-        self.registration = charity.registration
+        
         choices = [('', 'None'),  ('Add new', 'Add new')]
         earmark_options_list = charity.list_earmark_options(text=charity.earmark_options)
         for option in earmark_options_list:
@@ -104,6 +77,31 @@ class DonationForm(forms.Form):
             earmark_exists = False
         if earmark_exists and earmark not in earmark_options_list:
             choices.append((earmark, earmark))
+        self.fields['donor'] = forms.ModelChoiceField(
+            widget=forms.Select(attrs={
+                "class": "form-control",
+            }),
+            queryset=Donor.objects.all(),
+        )
+        self.fields['date_received'] = forms.DateField(
+            widget=DatePickerInput(attrs={
+                "class": "form-control",
+            })
+        )
+        self.fields['amount'] = forms.DecimalField(
+            decimal_places=2,
+            widget=forms.NumberInput(attrs={
+                "class": "form-control",
+            })
+        )
+        CURRENCY_CHOICES = [('CAD', 'CAD'), ('USD', 'USD')]
+        self.fields['currency'] = forms.ChoiceField(
+            widget=forms.Select(attrs={
+                "class": "form-control",
+            }),
+            choices=CURRENCY_CHOICES,
+            initial=charity.registration
+        )
         self.fields['charity'] = forms.ModelChoiceField(
             widget=forms.Select(attrs={
                 "class": "form-control",
