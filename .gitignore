@@ -7,3 +7,7 @@ projectname/__pycache__/
 projectname/db.sqlite3
 
 projectname/media/
+
+mydatabase
+
+.coverage

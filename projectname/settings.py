@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'receipt_generator',
     'flatpickr',
     'service_objects',
-    'reportlab'
+    'reportlab',
+    'django_nose'
 ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
@@ -95,21 +96,41 @@ TEMPLATES = [
     },
 ]
 
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=receipt_generator',
+]
+
 WSGI_APPLICATION = 'projectname.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DATABASE_NAME', ''),
-        'USER': os.environ.get('DATABASE_USER', ''),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', ''),
+#  The os.environ check detects whether you are local or on Azure hosting so that there is
+#  no need to manually specify a new database configuration for local development.
+
+if 'WEBSITE_SITE_NAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ.get('DATABASE_NAME', ''),
+            'USER': os.environ.get('DATABASE_USER', ''),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+            'HOST': os.environ.get('DATABASE_HOST', ''),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase',
+        }
+    }    
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
