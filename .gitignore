@@ -11,3 +11,9 @@ projectname/media/
 mydatabase
 
 .coverage
+
+.vscode
+
+desktop.ini
+
+geckodriver.log

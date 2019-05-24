@@ -1,16 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{% url 'receipt_generator:receipt_generator_index' %}">Home</a>
     <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:add_donor' %}">
+        <li class="nav-item"><a class="nav-link" id='add_donor' href="{% url 'receipt_generator:add_donor' %}">
             Create a <strong>donor</strong> record
         </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:choose_charity' %}">
+        <li class="nav-item"><a class="nav-link" id='add_donation' href="{% url 'receipt_generator:choose_charity' %}">
             Create a <strong>donation</strong> record
         </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:list_donors' %}">
+        <li class="nav-item"><a class="nav-link" id='list_donors' href="{% url 'receipt_generator:list_donors' %}">
             List <strong>donor</strong> records
         </a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'receipt_generator:list_donations' %}">
+        <li class="nav-item"><a class="nav-link" id='list_donations' href="{% url 'receipt_generator:list_donations' %}">
             List <strong>donation</strong> records
         </a></li>
     </ul>
@@ -24,7 +24,7 @@
                 Login
             </a></li> 
         {% endif %} 
-        <li class="nav-item"><a class="nav-link" href="/admin">
+        <li class="nav-item"><a class="nav-link" id='admin_interface_link' href="/admin">
             Go to admin interface
         </a></li>
     </ul>
