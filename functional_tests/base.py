@@ -1,3 +1,6 @@
+from django.test.utils import override_settings
+from django.conf import settings
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -53,6 +56,39 @@ class FunctionalTest(StaticLiveServerTestCase):
                 if time.time() - start_time > self.MAX_WAIT:
                     raise e
                 time.sleep(0.5)
+
+    # Setting DEBUG to True prevents an error whereby
+    # the admin site doesn't load any static files and raises an error.
+    @override_settings(DEBUG=True)
+    def create_charity(self):
+        # set up method begins us at the homepage, logged in
+        self.browser.find_element_by_id('admin_interface_link').click()
+        self.wait_for(lambda:
+            self.browser.find_element_by_xpath('//*[@id="content-main"]/div[2]/table/tbody/tr[1]/td[1]/a').click()
+        )
+        self.wait_for(lambda:
+            self.browser.find_element_by_id('id_name')
+        )
+
+        # Input new data
+        self.browser.find_element_by_id('id_name').send_keys('Test Charity')
+        self.browser.find_element_by_id('id_address').send_keys('1 Oxford Street\nLondon')
+        uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
+        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(uploads_directory, 'RCF_logo.png'))
+        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(uploads_directory, 'john_smith_signature.png'))
+        self.browser.find_element_by_id('id_registration').send_keys('0123456789')
+        self.browser.find_element_by_id('id_email').send_keys('charity@email.com')
+        self.browser.find_element_by_id('id_revenue_agency').send_keys('IRS')
+        self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
+
+    def create_donor(self):
+        self.browser.find_element_by_id('add_donor').click()
+        # Create new donor
+        self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys('Testo'))
+        self.browser.find_element_by_id('id_last_name').send_keys('Testerson')
+        self.browser.find_element_by_id('id_address').send_keys('1 Test Street\nTest Town\nTest State')
+        self.browser.find_element_by_id('id_email').send_keys('test@email.com')
+        self.browser.find_element_by_id('id_email').send_keys(Keys.ENTER)
         
     
     # def wait_for_row_in_list_table(self, row_text):

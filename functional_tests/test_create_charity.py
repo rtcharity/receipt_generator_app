@@ -12,25 +12,8 @@ class CreateCharityTest(FunctionalTest):
     # the admin site doesn't load any static files and raises an error.
     @override_settings(DEBUG=True)
     def test_create_a_new_charity(self):
-        # Inherited set up method begins us at the homepage, logged in
-        self.browser.find_element_by_id('admin_interface_link').click()
-        self.wait_for(lambda:
-            self.browser.find_element_by_xpath('//*[@id="content-main"]/div[2]/table/tbody/tr[1]/td[1]/a').click()
-        )
-        self.wait_for(lambda:
-            self.browser.find_element_by_id('id_name')
-        )
-
-        # Input new data
-        self.browser.find_element_by_id('id_name').send_keys('Test Charity')
-        self.browser.find_element_by_id('id_address').send_keys('1 Oxford Street\nLondon')
-        uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
-        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(uploads_directory, 'RCF_logo.png'))
-        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(uploads_directory, 'john_smith_signature.png'))
-        self.browser.find_element_by_id('id_registration').send_keys('0123456789')
-        self.browser.find_element_by_id('id_email').send_keys('charity@email.com')
-        self.browser.find_element_by_id('id_revenue_agency').send_keys('IRS')
-        self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
+        # Inherited method from base.py navigates to the admin interface and creates a charity
+        self.create_charity()
 
         # Assert that the new data is saved and visible
         self.wait_for(lambda: self.assertIn(

@@ -6,14 +6,14 @@ from .base import FunctionalTest
 class CreateDonorTest(FunctionalTest):
     
     def test_create_a_new_donor(self):
-        self.browser.find_element_by_id('add_donor').click()
-        # Create new donor
-        self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys('Testo'))
-        self.browser.find_element_by_id('id_last_name').send_keys('Testerson')
-        self.browser.find_element_by_id('id_address').send_keys('1 Test Street\nTest Town\nTest State')
-        self.browser.find_element_by_id('id_email').send_keys('test@email.com')
-        self.browser.find_element_by_id('id_email').send_keys(Keys.ENTER)
+        # Create new donor - inherited from base.py
+        self.create_donor()
         
+        # Check for success message
+        self.wait_for(lambda: self.assertIn(
+            'successfully saved', self.browser.find_element_by_class_name('alert alert-success').text)
+        )
+
         # Donor appears on list of donors
         self.wait_for(lambda: self.browser.find_element_by_id('list_donors').click())
         donor_id = str(Donor.objects.filter(first_name='Testo')[0].id)
@@ -21,6 +21,7 @@ class CreateDonorTest(FunctionalTest):
             self.assertIn('Testo Testerson', self.browser.find_element_by_id('name_' + donor_id).text)
         )
         self.assertIn('test@email.com', self.browser.find_element_by_id('email_' + donor_id).text)
+
         # Donor view displays with all data
         self.browser.find_element_by_id('view_' + donor_id).click()
         self.wait_for(lambda:
