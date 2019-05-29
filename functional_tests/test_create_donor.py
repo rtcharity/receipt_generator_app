@@ -11,7 +11,7 @@ class CreateDonorTest(FunctionalTest):
         
         # Check for success message
         self.wait_for(lambda: self.assertIn(
-            'successfully saved', self.browser.find_element_by_class_name('alert alert-success').text)
+            'successfully saved', self.browser.find_element_by_class_name('alert-success').text)
         )
 
         # Donor appears on list of donors

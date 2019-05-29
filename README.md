@@ -16,6 +16,18 @@ Make sure your virtual environment is activated, then:
 python manage.py test
 ```
 
+To run a specific test file:
+```
+python manage.py test functional_tests.test_create_donation
+```
+
+...where 'test_create_donation.py' is the filename.
+
+You may need to install geckodriver to use tests on Firefox.
+
+As of 29th May 2019 a lot of tests produce a ConnectionAbortedError as a result of a Python bug which will be fixed in 3.7.4 (scheduled June 24).
+https://github.com/python/cpython/pull/9713
+
 ## Local database setup with sqlite3
 
 projectname/settings.py will detect whether you are local or on Azure hosting so that there is no need to manually specify a new database configuration for local development.

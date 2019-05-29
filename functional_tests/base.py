@@ -21,7 +21,7 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.live_server_url = 'http://' + staging_server
         self.TEST_ADMIN = self.create_superuser()
         self.log_in_as_admin()
-    
+
     def tearDown(self):
         self.browser.quit()
 
@@ -31,7 +31,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         test_admin = User.objects.create_superuser(
             username='test_admin' + str(number_of_users + 1),
             password='test',
-            email='test@test.com'
+            email='test@test.com',
             )
         return test_admin
     
@@ -82,7 +82,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
 
     def create_donor(self):
-        self.browser.find_element_by_id('add_donor').click()
+        self.wait_for(lambda: self.browser.find_element_by_id('add_donor').click())
         # Create new donor
         self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys('Testo'))
         self.browser.find_element_by_id('id_last_name').send_keys('Testerson')
