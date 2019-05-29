@@ -1,4 +1,5 @@
 venv
+python37venv
 virtualenv
 
 __pycache__/
@@ -11,3 +12,9 @@ projectname/media/
 mydatabase
 
 .coverage
+
+.vscode
+
+desktop.ini
+
+geckodriver.log

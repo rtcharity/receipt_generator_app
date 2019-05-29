@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'flatpickr',
     'service_objects',
     'reportlab',
-    'django_nose'
+    'django_nose',
 ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)

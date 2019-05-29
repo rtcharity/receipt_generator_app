@@ -33,30 +33,34 @@
             {% for donation in donations %}
                 <tr>
                     <td>
-                        <a href="{% url 'receipt_generator:edit_donation' donation.id %}">
+                        <a id="edit_{{donation.id}}" href="{% url 'receipt_generator:edit_donation' donation.id %}">
                             Edit
                         </a>
                         /
-                        <a href="{% url 'receipt_generator:view_donation' donation.id %}">
+                        <a id="view_{{donation.id}}" href="{% url 'receipt_generator:view_donation' donation.id %}">
                             View
                         </a>
                     </td>
                     <td>
-                        {{ donation.date_received }}
+                        <a id="date_received_{{donation.id}}" href="{% url 'receipt_generator:view_donation' donation.id %}">
+                            {{ donation.date_received }}
+                        </a>
                     </td>
                     <td>
-                        <a href="{% url 'receipt_generator:view_donor' donation.donor.id %}">
+                        <a id="donor_{{donation.id}}" href="{% url 'receipt_generator:view_donor' donation.donor.id %}">
                             {{ donation.donor }}
                         </a>
                     </td>
-                    <td>{{ donation.charity }}</td>
-                    <td>{{ donation.amount }}</td>
-                    <td>{{ donation.currency }}</td>
-                    {% if donation.earmark %}
-                        <td>{{ donation.earmark }}</td>
-                    {% else %}
-                        <td>(None)</td>
-                    {% endif %}
+                    <td id="charity_{{donation.id}}">{{ donation.charity }}</td>
+                    <td id="amount_{{donation.id}}">{{ donation.amount }}</td>
+                    <td id="currency_{{donation.id}}">{{ donation.currency }}</td>
+                    <td id="earmark_{{donation.id}}">
+                        {% if donation.earmark %}
+                            {{ donation.earmark }}
+                        {% else %}
+                            (None)
+                        {% endif %}
+                    </td>
                 </tr>
             
             {% endfor %}
