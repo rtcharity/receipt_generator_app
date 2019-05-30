@@ -34,8 +34,9 @@ class CreateReceipt(Service):
             
         receipt.save()
         
-        recipients_list = [donation.donor.email, 'kieuk@hotmail.co.uk']
-        self.__send_email(receipt, full_receipt_file_path, recipients_list)
+        recipients_list = [donation.donor.email]
+        from_email = settings.DEFAULT_FROM_EMAIL
+        self.__send_email(receipt, full_receipt_file_path, recipients_list, from_email)
         
         return receipt
         
@@ -136,9 +137,9 @@ class CreateReceipt(Service):
         new_height = new_width * aspect
         return Image(image, width=new_width, height=new_height, hAlign=hAlign)
         
-    def __send_email(self, receipt, file_path, recipients):
+    def __send_email(self, receipt, file_path, recipients, from_email):
         body = "Dear %s,<br/><br/>Please find attached your donation receipt for tax purposes.<br/><br/>To ensure you keep receiving these receipts, add this address to your email whitelist." % receipt.donation.donor.first_name
-        msg = EmailMessage('Your donation tax receipt [automated email]', body, 'from@email.com', recipients)
+        msg = EmailMessage('Your donation tax receipt [automated email]', body, from_email, recipients)
         msg.content_subtype = "html"  
         msg.attach_file(file_path)
         msg.send()

@@ -60,3 +60,22 @@ python manage.py createsuperuser
 ```
 
 Define the required details for the admin account. Anyone who can edit the source code of the website and deploy can create an admin account in this way.
+
+## Hosting on Azure
+
+Environment variables you will need to set:
+
+- SENDGRID_API_KEY
+(from https://app.sendgrid.com/settings/api_keys which is protected by log in details)
+- SECRET_KEY (specific to each Django project)
+- DATABASE_NAME e.g. testdb
+- DATABASE_USER e.g. manager@your-database-server
+- DATABASE_PASSWORD e.g. supersecretpassword
+- DATABASE_HOST  e.g. your-database-server.postgres.database.azure.com
+
+Azure should set this automatically:
+- WEBSITE_SITE_NAME
+
+These resources may be useful:
+https://docs.microsoft.com/en-us/azure/app-service/containers/tutorial-python-postgresql-app
+https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-docker-go
