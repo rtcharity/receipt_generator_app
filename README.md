@@ -45,7 +45,6 @@ If admin site css is missing, `python3.6 manage.py collectstatic`
 
 Make sure your virtual environment is activated, then:
 ```
-cd rc4-mockup/projectname
 python manage.py runserver
 ```
 (Add `8080` to command if using Amazon Web Services IDE.)
