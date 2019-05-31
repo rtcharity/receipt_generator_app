@@ -81,13 +81,19 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_revenue_agency').send_keys('IRS')
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
 
-    def create_donor(self):
+    def create_donor(
+        self,
+        first_name='Testo',
+        last_name='Testerson',
+        address='1 Test Street\nTest Town\nTest State',
+        email='test@email.com',
+        ):
         self.wait_for(lambda: self.browser.find_element_by_id('add_donor').click())
         # Create new donor
-        self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys('Testo'))
-        self.browser.find_element_by_id('id_last_name').send_keys('Testerson')
-        self.browser.find_element_by_id('id_address').send_keys('1 Test Street\nTest Town\nTest State')
-        self.browser.find_element_by_id('id_email').send_keys('test@email.com')
+        self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys(first_name))
+        self.browser.find_element_by_id('id_last_name').send_keys(last_name)
+        self.browser.find_element_by_id('id_address').send_keys(address)
+        self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_email').send_keys(Keys.ENTER)
         
     
