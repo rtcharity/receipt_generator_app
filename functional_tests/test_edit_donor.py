@@ -3,16 +3,13 @@ from selenium.webdriver.common.keys import Keys
 from receipt_generator.models import Donor
 from .base import FunctionalTest
 
-class EditDonorTest(FunctionalTest):
-
-    def delete_whole_field(self, element):
-        element.send_keys(Keys.CONTROL, 'a')
-        element.send_keys(Keys.BACKSPACE)
+class EditDonorTest(FunctionalTest):        
     
     def test_edit_a_donor(self):
+        field_ids = ['id_first_name', 'id_last_name', 'id_address', 'id_email']
 
         # Create new donor - inherited from base.py
-        self.create_donor()
+        donor_original_details = self.create_donor()
         
         # Check for success message
         self.wait_for(lambda: self.assertIn(
@@ -25,30 +22,33 @@ class EditDonorTest(FunctionalTest):
         self.wait_for(lambda:
             self.assertIn('Edit donor', self.browser.find_element_by_tag_name('h1').text)
         )
-        self.assertIn('Testo', self.browser.find_element_by_id('id_first_name').get_attribute('value'))
-        self.assertIn('Testerson', self.browser.find_element_by_id('id_last_name').get_attribute('value'))
-        self.assertIn('1 Test Street\nTest Town\nTest State', self.browser.find_element_by_id('id_address').get_attribute('value'))
-        self.assertIn('test@email.com', self.browser.find_element_by_id('id_email').get_attribute('value'))
+        i = 0
+        for field_id in field_ids:
+            self.assertIn(
+                donor_original_details[i],
+                self.browser.find_element_by_id(field_id).get_attribute('value')
+            )
+            i += 1
 
         # Change the data
-        self.delete_whole_field(self.browser.find_element_by_id('id_first_name'))
-        self.browser.find_element_by_id('id_first_name').send_keys('Pesto')
-        
-        self.delete_whole_field(self.browser.find_element_by_id('id_last_name'))
-        self.browser.find_element_by_id('id_last_name').send_keys('Peterson')
-
-        self.delete_whole_field(self.browser.find_element_by_id('id_address'))
-        self.browser.find_element_by_id('id_address').send_keys('USA')
-
-        self.delete_whole_field(self.browser.find_element_by_id('id_email'))
-        self.browser.find_element_by_id('id_email').send_keys('pesto@email.com')
+        new_donor_details = ['Pesto', 'Peterson', 'USA', 'pesto@email.com']
+        i = 0
+        for field_id in field_ids:
+            element = self.browser.find_element_by_id(field_id)
+            element.send_keys(Keys.CONTROL, 'a')
+            element.send_keys(Keys.BACKSPACE)
+            element.send_keys(new_donor_details[i])
+            i += 1
         self.browser.find_element_by_class_name('btn-success').click()
 
         # Assertions
         self.wait_for(lambda: self.assertIn(
             'Successfully saved', self.browser.find_element_by_class_name('alert-success').text)
         )
-        self.assertIn('Pesto', self.browser.find_element_by_id('id_first_name').get_attribute('value'))
-        self.assertIn('Peterson', self.browser.find_element_by_id('id_last_name').get_attribute('value'))
-        self.assertIn('USA', self.browser.find_element_by_id('id_address').get_attribute('value'))
-        self.assertIn('pesto@email.com', self.browser.find_element_by_id('id_email').get_attribute('value'))
+        i = 0
+        for field_id in field_ids:    
+            self.assertIn(
+                new_donor_details[i],
+                self.browser.find_element_by_id(field_id).get_attribute('value')
+            )
+            i += 1

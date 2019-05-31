@@ -95,6 +95,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_address').send_keys(address)
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_email').send_keys(Keys.ENTER)
+
+        return [first_name, last_name, address, email]
         
     
     # def wait_for_row_in_list_table(self, row_text):
