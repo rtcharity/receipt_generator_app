@@ -60,7 +60,14 @@ class FunctionalTest(StaticLiveServerTestCase):
     # Setting DEBUG to True prevents an error whereby
     # the admin site doesn't load any static files and raises an error.
     @override_settings(DEBUG=True)
-    def create_charity(self):
+    def create_charity(
+        self,
+        name='Test Charity',
+        address='1 Oxford Street\nLondon',
+        registration='0123456789',
+        email='charity@email.com',
+        revenue_agency='IRS',
+    ):
         # set up method begins us at the homepage, logged in
         self.browser.find_element_by_id('admin_interface_link').click()
         self.wait_for(lambda:
@@ -71,14 +78,14 @@ class FunctionalTest(StaticLiveServerTestCase):
         )
 
         # Input new data
-        self.browser.find_element_by_id('id_name').send_keys('Test Charity')
-        self.browser.find_element_by_id('id_address').send_keys('1 Oxford Street\nLondon')
+        self.browser.find_element_by_id('id_name').send_keys(name)
+        self.browser.find_element_by_id('id_address').send_keys(address)
         uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
         self.browser.find_element_by_id('id_logo').send_keys(os.path.join(uploads_directory, 'RCF_logo.png'))
         self.browser.find_element_by_id('id_signature').send_keys(os.path.join(uploads_directory, 'john_smith_signature.png'))
-        self.browser.find_element_by_id('id_registration').send_keys('0123456789')
-        self.browser.find_element_by_id('id_email').send_keys('charity@email.com')
-        self.browser.find_element_by_id('id_revenue_agency').send_keys('IRS')
+        self.browser.find_element_by_id('id_registration').send_keys(registration)
+        self.browser.find_element_by_id('id_email').send_keys(email)
+        self.browser.find_element_by_id('id_revenue_agency').send_keys(revenue_agency)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
 
     def create_donor(
