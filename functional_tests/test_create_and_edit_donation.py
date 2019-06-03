@@ -50,7 +50,7 @@ class CreateAndEditDonationTest(FunctionalTest):
         self.assertIn(str(donation.currency), self.browser.find_element_by_id('currency_' + str(donation.id)).text)
         self.assertIn('(None)', self.browser.find_element_by_id('earmark_' + str(donation.id)).text)
 
-        # Donor view displays with all data
+        # Donation view displays with all data
         self.browser.find_element_by_id('view_' + str(donation.id)).click()
         self.wait_for(lambda:
             self.assertIn('View donation', self.browser.find_element_by_tag_name('h1').text)
