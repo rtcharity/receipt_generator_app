@@ -137,7 +137,13 @@ class CreateReceipt(Service):
         
     def __send_email(self, receipt, file_path, recipients, from_email):
         body = "Dear %s,<br/><br/>Please find attached your donation receipt for tax purposes.<br/><br/>To ensure you keep receiving these receipts, add this address to your email whitelist." % receipt.donation.donor.first_name
-        msg = EmailMessage('Your donation tax receipt [automated email]', body, from_email, recipients)
+        msg = EmailMessage(
+            'Your donation tax receipt [automated email]',
+            body,
+            from_email,
+            recipients,
+            # fail_silently = False, # Uncomment this in order to debug
+            )
         msg.content_subtype = "html"  
         msg.attach_file(file_path)
         msg.send()

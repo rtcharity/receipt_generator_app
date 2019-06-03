@@ -102,7 +102,6 @@ NOSE_ARGS = [
 WSGI_APPLICATION = 'projectname.wsgi.application'
 
 # Email
-# https://github.com/anymail/django-anymail
 
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
 DEFAULT_FROM_EMAIL = 'automatic@rtcharity.org'
