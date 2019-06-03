@@ -27,13 +27,11 @@ class CreateReceipt(Service):
 
         (full_receipt_file_path, receipt_pdf_file_name) = self.__generate_receipt_pdf(donation)
 
-        receipt = Receipt(
+        receipt = Receipt.objects.create(
             donation = donation,
             receipt_pdf = receipt_pdf_file_name
             )
-            
-        receipt.save()
-        
+                    
         recipients_list = [donation.donor.email]
         from_email = settings.DEFAULT_FROM_EMAIL
         self.__send_email(receipt, full_receipt_file_path, recipients_list, from_email)
