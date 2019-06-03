@@ -1,9 +1,13 @@
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
+from django.core import mail
+from django.test.utils import override_settings
+
 from receipt_generator.models import Donation, Receipt
 from .base import FunctionalTest
 
+@override_settings(EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend')
 class CreateAndEditDonationTest(FunctionalTest):
 
     def test_create_and_edit_a_new_donation(self):
@@ -50,5 +54,29 @@ class CreateAndEditDonationTest(FunctionalTest):
         self.assertIn(str(donation.currency), self.browser.find_element_by_id('currency_' + str(donation.id)).text)
         self.assertIn('(None)', self.browser.find_element_by_id('earmark_' + str(donation.id)).text)
 
-        self.fail('Write the rest of the test')
+        # Go to the view donation page
+        self.browser.find_element_by_id('view_' + str(donation.id)).click()
+        original_number_of_receipts = Receipt.objects.count()
+        original_number_of_emails = len(mail.outbox)
+
+        # Click the generate and send receipt button
+        self.wait_for(lambda:
+            self.browser.find_element_by_class_name('btn-success').click()
+        )
+        self.wait_for(lambda:
+            self.assertIn('Receipt generated and sent', self.browser.find_element_by_class_name('alert-success').text)
+        )
+
+        # Assertions
+        self.assertEquals((Receipt.objects.count() - original_number_of_receipts), 1)
+        self.assertEquals((len(mail.outbox) - original_number_of_emails), 1)
+        receipt = Receipt.objects.filter(donation=donation)
+        email = mail.outbox[0]
+        self.assertEquals(email.subject, 'Your donation tax receipt [automated email]')
+        self.assertIn(('Dear %s,<br/><br/>Please find attached your donation receipt for tax purposes.' % donation.donor.first_name), email.body)
+        self.assertEquals(email.from_email, 'automatic@rtcharity.org')
+        self.assertIn(donation.donor.email, email.to)
+        self.assertEqual(len(email.attachments), 1)
+
+
 

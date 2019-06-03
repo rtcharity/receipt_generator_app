@@ -1,7 +1,6 @@
 from django.test.utils import override_settings
 from django.conf import settings
 
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
