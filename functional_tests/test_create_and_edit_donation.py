@@ -14,29 +14,8 @@ class CreateAndEditDonationTest(FunctionalTest):
         self.create_donor()
         self.browser.get(self.live_server_url)
         self.create_donor(first_name='Another', last_name='Donor', email='different@email.com')
-        self.wait_for(lambda:
-            self.browser.find_element_by_id('add_donation').click()
-        )
-        # Create new donation
-        self.wait_for(lambda:
-            Select(self.browser.find_element_by_id('id_charity')).select_by_visible_text('Test Charity')
-        )
-        self.browser.find_element_by_id('proceed').click()
-        self.wait_for(lambda:
-            Select(self.browser.find_element_by_id('id_donor')).select_by_visible_text('Testo Testerson')
-        )
-        self.browser.find_element_by_xpath('/html/body/div[1]/form/p[3]/input[2]').click() # Click the date_received input
-        eighteenth_day_listed = self.browser.find_elements_by_class_name('flatpickr-day')[17]
-        eighteenth_day_listed.click()
-        self.browser.find_element_by_id('id_amount').send_keys('56789')
-        Select(self.browser.find_element_by_id('id_currency')).select_by_visible_text('USD')
-        self.browser.find_element_by_id('save').click()
-
-        # Check for success message
-        self.wait_for(lambda: self.assertIn(
-            'Successfully saved new donation info', self.browser.find_element_by_class_name('alert-success').text
-            )
-        )
+        self.browser.get(self.live_server_url)
+        self.create_donation()
         
         # Donation is on list of donations
         self.browser.find_element_by_id('list_donations').click()
