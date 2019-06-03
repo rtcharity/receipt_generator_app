@@ -15,7 +15,10 @@ class Donor(models.Model):
         )
         
     def __str__(self):
-        return '%s %s %s' % (self.first_name, self.middle_initials, self.last_name)
+        if self.middle_initials:
+            return '%s %s %s' % (self.first_name, self.middle_initials, self.last_name)
+        else:
+            return '%s %s' % (self.first_name, self.last_name)
 
 # The charity which receives the gift first (i.e. not the destination charity.)
 # In the first release of this web app, the charity will

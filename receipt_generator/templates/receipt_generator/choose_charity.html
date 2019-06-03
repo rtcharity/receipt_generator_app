@@ -8,7 +8,7 @@
 <form action="/choose_charity" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Proceed">
+    <input id="proceed" class="btn btn-success" type="submit" value="Proceed">
 </form>
 
 <a href='/admin/receipt_generator/charity/add/'>

@@ -32,22 +32,22 @@
         </thead>
         <tbody>
             {% for donor in donors %}
-                <tr>
+                <tr id='tr_{{ donor.id }}'>
                     <td>
-                        <a href="{% url 'receipt_generator:edit_donor' donor.id %}">
+                        <a id='edit_{{ donor.id }}' href="{% url 'receipt_generator:edit_donor' donor.id %}">
                             Edit
                         </a>
                         /
-                        <a href="{% url 'receipt_generator:view_donor' donor.id %}">
+                        <a id='view_{{ donor.id }}' href="{% url 'receipt_generator:view_donor' donor.id %}">
                             View
                         </a>
                     </td>
                     </td>
-                    <td>
+                    <td id='name_{{ donor.id }}'>
                         {{ donor }}
                     </td>
                     <td>
-                        <a href="mailto:{{donor.email}}">
+                        <a id='email_{{ donor.id }}' href="mailto:{{donor.email}}">
                             {{ donor.email }}
                         </a>
                     </td>

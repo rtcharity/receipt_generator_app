@@ -1,4 +1,5 @@
 venv
+python37venv
 virtualenv
 
 __pycache__/
@@ -7,3 +8,13 @@ projectname/__pycache__/
 projectname/db.sqlite3
 
 projectname/media/
+
+mydatabase
+
+.coverage
+
+.vscode
+
+desktop.ini
+
+geckodriver.log
