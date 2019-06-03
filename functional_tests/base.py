@@ -94,7 +94,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         last_name='Testerson',
         address='1 Test Street\nTest Town\nTest State',
         email='test@email.com',
-        ):
+    ):
         self.wait_for(lambda: self.browser.find_element_by_id('add_donor').click())
         # Create new donor
         self.wait_for(lambda: self.browser.find_element_by_id('id_first_name').send_keys(first_name))
