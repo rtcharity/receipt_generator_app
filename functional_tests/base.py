@@ -1,16 +1,18 @@
+import unittest
+import time
+import os
+
 from django.test.utils import override_settings
 from django.conf import settings
-
+from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import WebDriverException
 
-from django.contrib.auth import get_user_model
-import unittest
-import time
-import os
+from receipt_generator.models import Charity
 
 class FunctionalTest(StaticLiveServerTestCase):
 
@@ -22,6 +24,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         if staging_server:
             self.live_server_url = 'http://' + staging_server
         self.TEST_ADMIN = self.create_superuser()
+        self.uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
         self.log_in_as_admin()
 
     def tearDown(self):
@@ -82,13 +85,14 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Input new data
         self.browser.find_element_by_id('id_name').send_keys(name)
         self.browser.find_element_by_id('id_address').send_keys(address)
-        uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
-        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(uploads_directory, 'RCF_logo.png'))
-        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(uploads_directory, 'john_smith_signature.png'))
+        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(self.uploads_directory, 'RCF_logo.png'))
+        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(self.uploads_directory, 'john_smith_signature.png'))
         self.browser.find_element_by_id('id_registration').send_keys(registration)
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(revenue_agency)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
+
+        return Charity.objects.last()
 
     def create_donor(
         self,

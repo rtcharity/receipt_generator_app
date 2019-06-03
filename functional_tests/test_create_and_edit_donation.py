@@ -1,20 +1,41 @@
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
-from receipt_generator.models import Donation
+from receipt_generator.models import Donation, Charity, Donor
 from .base import FunctionalTest
 
 class CreateAndEditDonationTest(FunctionalTest):
 
     def test_create_and_edit_a_new_donation(self):
-        self.create_charity()
+        Charity.objects.create(
+            name='Test Charity',
+            address='1 Oxford Street\nLondon',
+            registration='0123456789',
+            email='charity@email.com',
+            revenue_agency='IRS',
+        )
+        Charity.objects.create(
+            name='Another Charity',
+            address='1 Oxford Street\nLondon',
+            registration='0123456789',
+            email='another@email.com',
+            revenue_agency='IRS',
+        )
+        Donor.objects.create(
+            first_name='Testo',
+            last_name='Testerson',
+            address='1 Test Street\nTest Town\nTest State',
+            email='test@email.com',
+        )
+        Donor.objects.create(
+            first_name='Another',
+            last_name='Donor',
+            address='1 Test Street\nTest Town\nTest State',
+            email='different@email.com',
+        )
         self.browser.get(self.live_server_url)
-        self.create_charity(name='Another Charity', email='another@email.com')
-        self.browser.get(self.live_server_url)
-        self.create_donor()
-        self.browser.get(self.live_server_url)
-        self.create_donor(first_name='Another', last_name='Donor', email='different@email.com')
-        self.browser.get(self.live_server_url)
+        
+        # Inherited from base.py
         self.create_donation()
         
         # Donation is on list of donations
