@@ -70,7 +70,7 @@ class CreateAndEditDonationTest(FunctionalTest):
         # Assertions
         self.assertEquals((Receipt.objects.count() - original_number_of_receipts), 1)
         self.assertEquals((len(mail.outbox) - original_number_of_emails), 1)
-        receipt = Receipt.objects.filter(donation=donation)
+        receipt = Receipt.objects.filter(donation=donation)[0]
         email = mail.outbox[0]
         self.assertEquals(email.subject, 'Your donation tax receipt [automated email]')
         self.assertIn(('Dear %s,<br/><br/>Please find attached your donation receipt for tax purposes.' % donation.donor.first_name), email.body)
