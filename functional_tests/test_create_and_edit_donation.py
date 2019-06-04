@@ -33,10 +33,15 @@ class CreateAndEditDonationTest(FunctionalTest):
             address='1 Test Street\nTest Town\nTest State',
             email='different@email.com',
         )
-        self.browser.get(self.live_server_url)
         
         # Inherited from base.py
         self.create_donation()
+
+        # Check for success message
+        self.wait_for(lambda: self.assertIn(
+            'Successfully saved new donation info', self.browser.find_element_by_class_name('alert-success').text
+            )
+        )
         
         # Donation is on list of donations
         self.browser.find_element_by_id('list_donations').click()

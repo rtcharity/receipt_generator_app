@@ -1,3 +1,13 @@
+# Use
+
+## Authentication
+
+There are two versions here: the branch 'remove-authentication' is a version without log-in for the receipt-generating side of the site, while the default branch 'dev' does require log-in.
+
+For both versions, login as admin is required to add a charity, using the admin site of the site. See [here](#to-enable-the-admin-side-of-the-site).
+
+# For developers
+
 ## Local installation
 
 ```

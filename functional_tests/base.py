@@ -139,10 +139,4 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_amount').send_keys(str(amount))
         Select(self.browser.find_element_by_id('id_currency')).select_by_visible_text(currency)
         self.browser.find_element_by_id('save').click()
-
-        # Check for success message
-        self.wait_for(lambda: self.assertIn(
-            'Successfully saved new donation info', self.browser.find_element_by_class_name('alert-success').text
-            )
-        )
         
