@@ -2,11 +2,14 @@
 
 ## Authentication
 
-There are two versions here: the branch 'remove-authentication' is a version without log-in for the receipt-generating side of the site, while the default branch 'dev' does require log-in.
+If you need to enable user authentication, simply add the following line to receipt_generator/views.py:
+```
+import from django.contrib.auth.decorators import login_required
+```
 
-For both versions, login as admin is required to add a charity, using the admin site of the site. See [here](#to-enable-the-admin-side-of-the-site).
+...and add `@login_required` above any relevant view method. 
 
-# For developers
+Login as admin is required to add a new charity, using the admin site of the site. See [here](#to-enable-the-admin-side-of-the-site).
 
 ## Local installation
 
