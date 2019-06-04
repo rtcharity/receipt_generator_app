@@ -25,7 +25,7 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.live_server_url = 'http://' + staging_server
         self.TEST_ADMIN = self.create_superuser()
         self.uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
-        self.log_in_as_admin()
+        self.browser.get(self.live_server_url)
 
     def tearDown(self):
         self.browser.quit()
@@ -40,16 +40,17 @@ class FunctionalTest(StaticLiveServerTestCase):
             )
         return test_admin
     
-    def log_in_as_admin(self):
+    def log_in_to_admin_side_of_site(self):
         # Go to home page
         self.browser.get(self.live_server_url)
         # Log in
+        self.browser.find_element_by_id('admin_interface_link').click()
         self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
         password_input = self.browser.find_element_by_id('id_password')
         password_input.send_keys('test')
         password_input.send_keys(Keys.ENTER)
         self.wait_for(lambda:
-            self.assertIn('Welcome', self.browser.find_element_by_tag_name('h1').text)
+            self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
         )
 
     def wait_for(self, function):
@@ -73,8 +74,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         email='charity@email.com',
         revenue_agency='IRS',
     ):
-        # set up method begins us at the homepage, logged in
-        self.browser.find_element_by_id('admin_interface_link').click()
+        self.log_in_to_admin_side_of_site()
+        
+        # Click to add a charity
         self.wait_for(lambda:
             self.browser.find_element_by_xpath('//*[@id="content-main"]/div[2]/table/tbody/tr[1]/td[1]/a').click()
         )
