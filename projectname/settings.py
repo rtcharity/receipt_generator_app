@@ -120,7 +120,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #  The os.environ check detects whether you are local or on Azure hosting so that there is
 #  no need to manually specify a new database configuration for local development.
 
-if 'WEBSITE_SITE_NAME' in os.environ:
+if 'WEBSITE_SITE_NAME' in os.environ: # in production (with postgres on Azure)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -130,7 +130,7 @@ if 'WEBSITE_SITE_NAME' in os.environ:
             'HOST': os.environ.get('DATABASE_HOST', ''),
         }
     }
-else:
+else: # if in testing or development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

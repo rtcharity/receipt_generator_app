@@ -11,6 +11,11 @@ import from django.contrib.auth.decorators import login_required
 
 Login as admin is required to add a new charity, using the admin site of the site. See [here](#to-enable-the-admin-side-of-the-site).
 
+## Getting visibility on errors
+
+Set DEBUG=True in projectname/settings.py.
+Remove the error-catching 'try/except/else' sequences from receipt_generator/views.py.
+
 ## Local installation
 
 ```
@@ -40,8 +45,6 @@ You may need to install geckodriver to use tests on Firefox.
 
 As of 29th May 2019 a lot of tests produce a ConnectionAbortedError as a result of a Python bug which will be fixed in 3.7.4 (scheduled June 24).
 https://github.com/python/cpython/pull/9713
-
-Occasionally the part of the test which manually creates a new charity has a Server Error for no reason I can discern. Re-running the test often 'fixes' this.
 
 ## Local database setup with sqlite3
 
