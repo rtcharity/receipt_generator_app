@@ -45,12 +45,20 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         # Log in
         self.browser.find_element_by_id('admin_interface_link').click()
-        self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
+        self.wait_for(lambda:
+            self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
+        )
         password_input = self.browser.find_element_by_id('id_password')
         password_input.send_keys('test')
         password_input.send_keys(Keys.ENTER)
         self.wait_for(lambda:
             self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
+        )
+
+    def log_out_of_admin(self):
+        self.browser.get(self.live_server_url + '/admin')
+        self.wait_for(lambda:
+            self.browser.find_element_by_link_text('LOG OUT').click()
         )
 
     def wait_for(self, function):
@@ -73,9 +81,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         registration='0123456789',
         email='charity@email.com',
         revenue_agency='IRS',
+        log_out_admin=True,
     ):
         self.log_in_to_admin_side_of_site()
-        
+
         # Click to add a charity
         self.wait_for(lambda:
             self.browser.find_element_by_xpath('//*[@id="content-main"]/div[2]/table/tbody/tr[1]/td[1]/a').click()
@@ -93,6 +102,16 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(revenue_agency)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
+
+        self.wait_for(lambda:
+            self.assertIn(
+                ('The charity "%s" was added successfully.' % name),
+                self.browser.find_element_by_class_name('success').text
+            )
+        )
+
+        if log_out_admin:
+            self.log_out_of_admin()
 
         return Charity.objects.last()
 
