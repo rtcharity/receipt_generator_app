@@ -41,7 +41,7 @@ class CreateReceipt(Service):
     def __generate_receipt_pdf(self, donation):
         showFrameBoundaries = 0 #Set to 1 for debugging formatting, 0 for invisible
 
-        width, height = letter
+        # width, height = letter
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name="RightAligned", alignment=TA_RIGHT))
         styles.add(ParagraphStyle(name="CenterAligned", alignment=TA_CENTER))

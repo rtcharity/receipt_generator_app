@@ -1,16 +1,18 @@
+import unittest
+import time
+import os
+
 from django.test.utils import override_settings
 from django.conf import settings
-
+from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import WebDriverException
 
-from django.contrib.auth import get_user_model
-import unittest
-import time
-import os
+from receipt_generator.models import Charity
 
 class FunctionalTest(StaticLiveServerTestCase):
 
@@ -22,7 +24,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         if staging_server:
             self.live_server_url = 'http://' + staging_server
         self.TEST_ADMIN = self.create_superuser()
-        self.log_in_as_admin()
+        self.uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
+        self.browser.get(self.live_server_url)
 
     def tearDown(self):
         self.browser.quit()
@@ -37,16 +40,25 @@ class FunctionalTest(StaticLiveServerTestCase):
             )
         return test_admin
     
-    def log_in_as_admin(self):
+    def log_in_to_admin_side_of_site(self):
         # Go to home page
         self.browser.get(self.live_server_url)
         # Log in
-        self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
+        self.browser.find_element_by_id('admin_interface_link').click()
+        self.wait_for(lambda:
+            self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
+        )
         password_input = self.browser.find_element_by_id('id_password')
         password_input.send_keys('test')
         password_input.send_keys(Keys.ENTER)
         self.wait_for(lambda:
-            self.assertIn('Welcome', self.browser.find_element_by_tag_name('h1').text)
+            self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
+        )
+
+    def log_out_of_admin(self):
+        self.browser.get(self.live_server_url + '/admin')
+        self.wait_for(lambda:
+            self.browser.find_element_by_link_text('LOG OUT').click()
         )
 
     def wait_for(self, function):
@@ -69,9 +81,11 @@ class FunctionalTest(StaticLiveServerTestCase):
         registration='0123456789',
         email='charity@email.com',
         revenue_agency='IRS',
+        log_out_admin=True,
     ):
-        # set up method begins us at the homepage, logged in
-        self.browser.find_element_by_id('admin_interface_link').click()
+        self.log_in_to_admin_side_of_site()
+
+        # Click to add a charity
         self.wait_for(lambda:
             self.browser.find_element_by_xpath('//*[@id="content-main"]/div[2]/table/tbody/tr[1]/td[1]/a').click()
         )
@@ -82,13 +96,24 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Input new data
         self.browser.find_element_by_id('id_name').send_keys(name)
         self.browser.find_element_by_id('id_address').send_keys(address)
-        uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
-        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(uploads_directory, 'RCF_logo.png'))
-        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(uploads_directory, 'john_smith_signature.png'))
+        self.browser.find_element_by_id('id_logo').send_keys(os.path.join(self.uploads_directory, 'RCF_logo.png'))
+        self.browser.find_element_by_id('id_signature').send_keys(os.path.join(self.uploads_directory, 'john_smith_signature.png'))
         self.browser.find_element_by_id('id_registration').send_keys(registration)
         self.browser.find_element_by_id('id_email').send_keys(email)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(revenue_agency)
         self.browser.find_element_by_id('id_revenue_agency').send_keys(Keys.ENTER)
+
+        self.wait_for(lambda:
+            self.assertIn(
+                ('The charity "%s" was added successfully.' % name),
+                self.browser.find_element_by_class_name('success').text
+            )
+        )
+
+        if log_out_admin:
+            self.log_out_of_admin()
+
+        return Charity.objects.last()
 
     def create_donor(
         self,
@@ -133,10 +158,4 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_id('id_amount').send_keys(str(amount))
         Select(self.browser.find_element_by_id('id_currency')).select_by_visible_text(currency)
         self.browser.find_element_by_id('save').click()
-
-        # Check for success message
-        self.wait_for(lambda: self.assertIn(
-            'Successfully saved new donation info', self.browser.find_element_by_class_name('alert-success').text
-            )
-        )
         
