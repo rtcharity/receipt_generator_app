@@ -70,7 +70,7 @@ Environment variables you will need to set:
 
 - SENDGRID_API_KEY
 (from https://app.sendgrid.com/settings/api_keys which is protected by log in details)
-- SECRET_KEY (specific to each Django project)
+- SECRET_KEY (specific to each Django project - ask for this on Slack)
 - DATABASE_NAME e.g. testdb
 - DATABASE_USER e.g. manager@your-database-server
 - DATABASE_PASSWORD e.g. supersecretpassword
