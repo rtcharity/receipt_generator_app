@@ -1,3 +1,5 @@
+This is an app written for [Rethink Charity](https://github.com/rtcharity) to automate the generation of tax receipt pdfs for donors.
+
 # Use
 
 ## Authentication
