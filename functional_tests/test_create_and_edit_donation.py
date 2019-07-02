@@ -1,36 +1,41 @@
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
-from receipt_generator.models import Donation
+from receipt_generator.models import Donation, Charity, Donor
 from .base import FunctionalTest
 
 class CreateAndEditDonationTest(FunctionalTest):
 
     def test_create_and_edit_a_new_donation(self):
-        self.create_charity()
-        self.browser.get(self.live_server_url)
-        self.create_charity(name='Another Charity', email='another@email.com')
-        self.browser.get(self.live_server_url)
-        self.create_donor()
-        self.browser.get(self.live_server_url)
-        self.create_donor(first_name='Another', last_name='Donor', email='different@email.com')
-        self.wait_for(lambda:
-            self.browser.find_element_by_id('add_donation').click()
+        Charity.objects.create(
+            name='Test Charity',
+            address='1 Oxford Street\nLondon',
+            registration='0123456789',
+            email='charity@email.com',
+            revenue_agency='IRS',
         )
-        # Create new donation
-        self.wait_for(lambda:
-            Select(self.browser.find_element_by_id('id_charity')).select_by_visible_text('Test Charity')
+        Charity.objects.create(
+            name='Another Charity',
+            address='1 Oxford Street\nLondon',
+            registration='0123456789',
+            email='another@email.com',
+            revenue_agency='IRS',
         )
-        self.browser.find_element_by_id('proceed').click()
-        self.wait_for(lambda:
-            Select(self.browser.find_element_by_id('id_donor')).select_by_visible_text('Testo Testerson')
+        Donor.objects.create(
+            first_name='Testo',
+            last_name='Testerson',
+            address='1 Test Street\nTest Town\nTest State',
+            email='test@email.com',
         )
-        self.browser.find_element_by_xpath('/html/body/div[1]/form/p[3]/input[2]').click() # Click the date_received input
-        eighteenth_day_listed = self.browser.find_elements_by_class_name('flatpickr-day')[17]
-        eighteenth_day_listed.click()
-        self.browser.find_element_by_id('id_amount').send_keys('56789')
-        Select(self.browser.find_element_by_id('id_currency')).select_by_visible_text('USD')
-        self.browser.find_element_by_id('save').click()
+        Donor.objects.create(
+            first_name='Another',
+            last_name='Donor',
+            address='1 Test Street\nTest Town\nTest State',
+            email='different@email.com',
+        )
+        
+        # Inherited from base.py
+        self.create_donation()
 
         # Check for success message
         self.wait_for(lambda: self.assertIn(
@@ -50,7 +55,7 @@ class CreateAndEditDonationTest(FunctionalTest):
         self.assertIn(str(donation.currency), self.browser.find_element_by_id('currency_' + str(donation.id)).text)
         self.assertIn('(None)', self.browser.find_element_by_id('earmark_' + str(donation.id)).text)
 
-        # Donor view displays with all data
+        # Donation view displays with all data
         self.browser.find_element_by_id('view_' + str(donation.id)).click()
         self.wait_for(lambda:
             self.assertIn('View donation', self.browser.find_element_by_tag_name('h1').text)

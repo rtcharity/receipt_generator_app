@@ -27,13 +27,11 @@ class CreateReceipt(Service):
 
         (full_receipt_file_path, receipt_pdf_file_name) = self.__generate_receipt_pdf(donation)
 
-        receipt = Receipt(
+        receipt = Receipt.objects.create(
             donation = donation,
             receipt_pdf = receipt_pdf_file_name
             )
-            
-        receipt.save()
-        
+                    
         recipients_list = [donation.donor.email]
         from_email = settings.DEFAULT_FROM_EMAIL
         self.__send_email(receipt, full_receipt_file_path, recipients_list, from_email)
@@ -43,7 +41,7 @@ class CreateReceipt(Service):
     def __generate_receipt_pdf(self, donation):
         showFrameBoundaries = 0 #Set to 1 for debugging formatting, 0 for invisible
 
-        width, height = letter
+        # width, height = letter
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name="RightAligned", alignment=TA_RIGHT))
         styles.add(ParagraphStyle(name="CenterAligned", alignment=TA_CENTER))
@@ -139,7 +137,13 @@ class CreateReceipt(Service):
         
     def __send_email(self, receipt, file_path, recipients, from_email):
         body = "Dear %s,<br/><br/>Please find attached your donation receipt for tax purposes.<br/><br/>To ensure you keep receiving these receipts, add this address to your email whitelist." % receipt.donation.donor.first_name
-        msg = EmailMessage('Your donation tax receipt [automated email]', body, from_email, recipients)
+        msg = EmailMessage(
+            'Your donation tax receipt [automated email]',
+            body,
+            from_email,
+            recipients,
+            # fail_silently = False, # Uncomment this in order to debug
+            )
         msg.content_subtype = "html"  
         msg.attach_file(file_path)
         msg.send()

@@ -1,3 +1,7 @@
+This is an app written for [Rethink Charity](https://github.com/rtcharity) to automate the generation of tax receipt pdfs for donors.
+
+# Use
+
 ## Local installation
 
 ```
@@ -66,7 +70,7 @@ Environment variables you will need to set:
 
 - SENDGRID_API_KEY
 (from https://app.sendgrid.com/settings/api_keys which is protected by log in details)
-- SECRET_KEY (specific to each Django project)
+- SECRET_KEY (specific to each Django project - ask for this on Slack)
 - DATABASE_NAME e.g. testdb
 - DATABASE_USER e.g. manager@your-database-server
 - DATABASE_PASSWORD e.g. supersecretpassword
@@ -78,3 +82,21 @@ Azure should set this automatically:
 These resources may be useful:
 https://docs.microsoft.com/en-us/azure/app-service/containers/tutorial-python-postgresql-app
 https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-docker-go
+
+# For further developing
+
+## Authentication
+
+If you need to enable user authentication, simply add the following line to receipt_generator/views.py:
+```
+import from django.contrib.auth.decorators import login_required
+```
+
+...and add `@login_required` above any relevant view method. 
+
+Login as admin is required to add a new charity, using the admin site of the site. See [here](#to-enable-the-admin-side-of-the-site).
+
+## Getting visibility on errors
+
+Set DEBUG=True in projectname/settings.py.
+Remove the error-catching 'try/except/else' sequences from receipt_generator/views.py.

@@ -31,3 +31,4 @@ class CreateDonorTest(FunctionalTest):
         self.assertIn('Testerson', self.browser.find_element_by_id('id_last_name').get_attribute('value'))
         self.assertIn('1 Test Street\nTest Town\nTest State', self.browser.find_element_by_id('id_address').get_attribute('value'))
         self.assertIn('test@email.com', self.browser.find_element_by_id('id_email').get_attribute('value'))
+        

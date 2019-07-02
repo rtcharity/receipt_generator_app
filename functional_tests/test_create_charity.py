@@ -13,18 +13,16 @@ class CreateCharityTest(FunctionalTest):
     @override_settings(DEBUG=True)
     def test_create_a_new_charity(self):
         # Inherited method from base.py navigates to the admin interface and creates a charity
-        self.create_charity()
+        self.create_charity(log_out_admin=False)
 
         # Assert that the new data is saved and visible
-        self.wait_for(lambda: self.assertIn(
-            'The charity "Test Charity" was added successfully.',
-            self.browser.find_element_by_class_name('success').text
-            )
+        self.wait_for(lambda:
+            self.browser.find_element_by_xpath('//*[@id="container"]/ul/li/a').click()
         )
-        self.browser.find_element_by_xpath('//*[@id="container"]/ul/li/a').click()
-        self.wait_for(lambda: self.assertIn(
-            'Test Charity',
-            self.browser.find_element_by_id('id_name').get_attribute('value')
+        self.wait_for(lambda:
+            self.assertIn(
+                'Test Charity',
+                self.browser.find_element_by_id('id_name').get_attribute('value')
             )
         )
         self.assertIn('1 Oxford Street\nLondon', self.browser.find_element_by_id('id_address').get_attribute('value'))

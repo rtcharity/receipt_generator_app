@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [os.environ['WEBSITE_SITE_NAME'] + '.azurewebsites.net', '127.0.0.1'] if 'WEBSITE_SITE_NAME' in os.environ else []
 
@@ -76,7 +76,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'projectname/templates'),
+            os.path.join(BASE_DIR, 'projectname', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -102,7 +102,6 @@ NOSE_ARGS = [
 WSGI_APPLICATION = 'projectname.wsgi.application'
 
 # Email
-# https://github.com/anymail/django-anymail
 
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
 DEFAULT_FROM_EMAIL = 'automatic@rtcharity.org'
@@ -121,7 +120,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #  The os.environ check detects whether you are local or on Azure hosting so that there is
 #  no need to manually specify a new database configuration for local development.
 
-if 'WEBSITE_SITE_NAME' in os.environ:
+if 'WEBSITE_SITE_NAME' in os.environ: # in production (with postgres on Azure)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -131,7 +130,7 @@ if 'WEBSITE_SITE_NAME' in os.environ:
             'HOST': os.environ.get('DATABASE_HOST', ''),
         }
     }
-else:
+else: # if in testing or development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
