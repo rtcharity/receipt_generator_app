@@ -11,6 +11,20 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
 
+def get_setting(name):
+    """Retrieve and return a specific setting from either the environment variable "name" or the file "/etc/receipt_generator/name" (note that the filename will be lowercased automatically, just because that's how I named the files when I created them)"""
+    setting = os.environ.get(name, '')
+
+    if setting != '':
+        return setting
+
+    try:
+        with open('/etc/receipt-generator/' + name.lower()) as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return ''
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -18,12 +32,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', '')
+SECRET_KEY = get_setting('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ['WEBSITE_SITE_NAME'] + '.azurewebsites.net', '127.0.0.1'] if 'WEBSITE_SITE_NAME' in os.environ else []
+ALLOWED_HOSTS = [get_setting('WEBSITE_SITE_NAME'), '127.0.0.1'] if get_setting('WEBSITE_SITE_NAME') != '' else []
 
 # Application definition
 
@@ -103,7 +117,7 @@ WSGI_APPLICATION = 'projectname.wsgi.application'
 
 # Email
 
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
+SENDGRID_API_KEY = get_setting('SENDGRID_API_KEY')
 DEFAULT_FROM_EMAIL = 'automatic@rtcharity.org'
 
 EMAIL_HOST = 'smtp.sendgrid.net'
@@ -120,14 +134,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #  The os.environ check detects whether you are local or on Azure hosting so that there is
 #  no need to manually specify a new database configuration for local development.
 
-if 'WEBSITE_SITE_NAME' in os.environ: # in production (with postgres on Azure)
+if get_setting('WEBSITE_SITE_NAME') != '': # in production (with postgres on Azure)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ.get('DATABASE_NAME', ''),
-            'USER': os.environ.get('DATABASE_USER', ''),
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-            'HOST': os.environ.get('DATABASE_HOST', ''),
+            'NAME': get_setting('DATABASE_NAME'),
+            'USER': get_setting('DATABASE_USER'),
+            'PASSWORD': get_setting('DATABASE_PASSWORD'),
+            'HOST': get_setting('DATABASE_HOST'),
         }
     }
 else: # if in testing or development
