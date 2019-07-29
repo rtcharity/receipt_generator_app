@@ -85,7 +85,7 @@ https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-docker-
 
 ## Authentication
 
-If you need to enable user authentication, simply add the following line to receipt_generator/views.py:
+If you need to enable user authentication, simply add the following line to receipt_generator/views.py (or check out the branch 'manual_user_authentication'):
 ```
 from django.contrib.auth.decorators import login_required
 ```

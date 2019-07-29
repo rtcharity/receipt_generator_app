@@ -13,11 +13,12 @@ from .base import FunctionalTest
 class CreateAndSendReceiptTest(FunctionalTest):
 
     def test_create_and_send_receipt_as_email_attachment(self):
-        self.create_charity()
+        self.create_charity(log_out_admin=False)
         self.browser.get(self.live_server_url)
         test_charity = self.create_charity(
             name='Another Charity',
             email='another@email.com',
+            log_out_admin=False,
         )
         testo_donor = Donor.objects.create(
             first_name='Testo',

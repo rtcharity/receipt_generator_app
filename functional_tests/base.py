@@ -10,14 +10,17 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, NoSuchElementException
 
 from receipt_generator.models import Charity
 
 class FunctionalTest(StaticLiveServerTestCase):
 
-    MAX_WAIT = 10
+    MAX_WAIT = 3
 
+    # Setting DEBUG to True prevents an error whereby
+    # the admin site doesn't load any static files and raises an error.
+    @override_settings(DEBUG=True)
     def setUp(self):
         self.browser = webdriver.Firefox()
         staging_server = os.environ.get('STAGING_SERVER')  
@@ -25,6 +28,7 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.live_server_url = 'http://' + staging_server
         self.TEST_ADMIN = self.create_superuser()
         self.uploads_directory = os.path.join(os.path.dirname(__file__), 'files_for_testing_upload')
+        self.log_in_to_admin_side_of_site() # Remove if not using manual authentication
         self.browser.get(self.live_server_url)
 
     def tearDown(self):
@@ -45,15 +49,23 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url)
         # Log in
         self.browser.find_element_by_id('admin_interface_link').click()
-        self.wait_for(lambda:
-            self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
-        )
-        password_input = self.browser.find_element_by_id('id_password')
-        password_input.send_keys('test')
-        password_input.send_keys(Keys.ENTER)
-        self.wait_for(lambda:
-            self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
-        )
+        try:
+            self.wait_for(lambda:
+                self.browser.find_element_by_id('id_username').send_keys(self.TEST_ADMIN.username)
+            )
+        # If already logged in:
+        except NoSuchElementException: 
+            self.wait_for(lambda:
+                self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
+            )
+        else:
+            password_input = self.browser.find_element_by_id('id_password')
+            password_input.send_keys('test')
+            password_input.send_keys(Keys.ENTER)
+            self.wait_for(lambda:
+                self.assertIn('WELCOME', self.browser.find_element_by_id('user-tools').text)
+            )
+        
 
     def log_out_of_admin(self):
         self.browser.get(self.live_server_url + '/admin')
