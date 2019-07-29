@@ -4,7 +4,6 @@ from . import views
 app_name = 'receipt_generator'
 urlpatterns = [
     path("", views.receipt_generator_index, name="receipt_generator_index"),
-    path("receipt/<int:pk>", views.view_receipt, name="view_receipt"),
     path("donor/add", views.add_donor, name="add_donor"),
     path("donor/<int:pk>/edit", views.edit_donor, name="edit_donor"),
     path("donor/<int:pk>", views.view_donor, name="view_donor"),
