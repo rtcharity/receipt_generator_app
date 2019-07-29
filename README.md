@@ -10,7 +10,7 @@ python -m venv path/to/new/virtual/environment
 pip install -r requirements.txt
 ```
 Check that the virtual environment is using python 3.6 or higher.
-Set the environment variables (SECRET_KEY)
+Set the environment variables (SECRET_KEY, SENDGRID_API_KEY)
 
 ## To run tests and see test coverage
 
