@@ -179,6 +179,8 @@ def view_donation(request, pk):
         messages.success(request, "Successfully saved new donation information!")
     if request.GET.get('new_donation_success') and request.GET.get('new_donation_success') == 'true':
         messages.success(request, "Successfully saved new donation information!")
+    if request.GET.get('new_receipt_success') and request.GET.get('new_receipt_success') == 'true':
+        messages.success(request, "Receipt generated and sent")
     context = {
         'donations': [donation],
         'donation': donation,
@@ -186,25 +188,20 @@ def view_donation(request, pk):
     return render(request, 'receipt_generator/view_donation.html', context)
 
 def add_receipt(request, pk):
-    donation = get_object_or_404(Donation, pk=pk)
-    donation_form = DonationForm(donation.charity, model_to_dict(donation))
-    try:
-        receipt = CreateReceipt.execute({
-            'donation_pk': pk
-        })
-    except Exception as e:
-        messages.error(request, 'Something went wrong! %s' % e.__cause__)
-        return render(request, ('receipt_generator/add_donation.html'), {
-            'donation_form': donation_form,
-        })
-    else:
-        messages.success(request, 'Receipt generated and sent')
-        context = {
-            'donation': donation,
-            'donation_form': donation_form,
-            'receipt': receipt
-        }
-        return render(request, 'receipt_generator/add_receipt.html', context)
+    if request.method == 'POST':
+        donation = get_object_or_404(Donation, pk=pk)
+        donation_form = DonationForm(donation.charity, model_to_dict(donation))
+        try:
+            receipt = CreateReceipt.execute({
+                'donation_pk': pk
+            })
+        except Exception as e:
+            messages.error(request, 'Something went wrong! %s' % e.__cause__)
+            return render(request, ('receipt_generator/add_donation.html'), {
+                'donation_form': donation_form,
+            })
+        else:
+            return HttpResponseRedirect('/donation/%s?new_receipt_success=true' % donation.id)
  
 def choose_charity(request):
     if request.method == 'GET':

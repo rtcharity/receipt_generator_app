@@ -17,8 +17,9 @@
     Edit this donation
 </a>
 
-<a class="btn btn-success" href="{% url 'receipt_generator:add_receipt' donation.id %}">
-    Generate and send tax receipt
-</a>
+<form action="{% url 'receipt_generator:add_receipt' donation.id %}" method="post">
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Generate and send tax receipt"/>
+</form>
 
 {% endblock %}
