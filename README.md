@@ -56,7 +56,6 @@ You may need to add the host url to ALLOWED_HOSTS in settings.py if not using lo
 
 ## To enable the admin side of the site
 
-`cd` to rc4-mockup/projectname
 ```
 python manage.py createsuperuser
 ```
