@@ -5,13 +5,13 @@
 
 {% if success_message %}<p class="alert alert-success"><strong>{{ success_message }}</strong></p>{% endif %}
 {% if error_message %}<p class="alert alert-warning"><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="/choose_charity" method="post">
+<form action={% url 'receipt_generator:choose_charity' %} method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input id="proceed" class="btn btn-success" type="submit" value="Proceed">
 </form>
 
-<a href='/admin/receipt_generator/charity/add/'>
+<a href="/admin/receipt_generator/charity/add">
     Click here to add a new charity.
 </a>
 
