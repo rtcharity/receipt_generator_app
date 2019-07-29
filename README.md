@@ -5,8 +5,7 @@ This is an app written for [Rethink Charity](https://github.com/rtcharity) to au
 ## Local installation
 
 ```
-git clone https://github.com/david-mears/rc4-mock-up
-cd rc4-mock-up
+git clone https://github.com/rtcharity/receipt_generator_app
 python -m venv path/to/new/virtual/environment
 pip install -r requirements.txt
 ```
